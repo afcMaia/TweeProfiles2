@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>TweeProfiles</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" hrf="css/jquery.jqplot.min.css" />
+    <!-- Bootstrap theme -->
+    <!-- <link href="css/bootstrap-theme.min.css" rel="stylesheet"> -->
+
+    <!-- Custom CSS -->
+    <link href="css/scrolling-nav.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- TweeProfiles2 JavaScript -->
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBnMv6QNW-8AeVILsEuahE6k9UqngFmJkQ&sensor=false"></script>
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery.jqplot.min.js"></script>
+    <script type="text/javascript" src="js/jqplot.bubbleRenderer.min.js"></script>
+    <script type="text/javascript" src="js/jquery.awesomeCloud-0.2.js"></script>
+    <script type="text/javascript" src="js/tweeprofiles.js"></script>
+
+    <script src="http://simile.mit.edu/timeline/api/timeline-api.js" type="text/javascript"></script>
+
+</head>
+
+<!-- The #page-top ID is part of the scrolling feature - the data-spy and data-target are part of the built-in Bootstrap scrollspy function -->
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" onload="onLoad();" onresize="onResize();">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top" style="color:#4099FF; font-family: fantasy;">TweeProfiles</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav">
+                    <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+                    <li class="hidden">
+                        <a class="page-scroll" href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#about" style="color:#4099FF; font-family: fantasy;">Cloud</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#services" style="color:#4099FF; font-family: fantasy;">Timeline</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#contact" style="color:#4099FF; font-family: fantasy;">Contact</a>
+                    </li>
+                </ul>
+                 <div id="twitterPic">   
+                    <a href="index.html"><img src="image/twitter_icon.jpg" alt="Twitter" width="45" height="45"> </a>       
+                </div>
+            </div>
+
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Intro Section -->
+    <section id="intro" class="intro-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <button id="showbutton" type="button" class="btn btn-default" style="color:#4099FF; font-family: fantasy; position: absolute; left:5%; top:-45px; width: 8%;" onclick="if(document.getElementById('controls') .style.display=='none') {document.getElementById('controls') .style.display=''}else{document.getElementById('controls') .style.display='none'}">Dimensions</button>
+
+                    <hr noshade="" size="1" width="1150" style="position: absolute; top:-25px; left:5%">
+
+                    <div id="controls" style="display:none;">
+                        <div id="dimension" style="left:5%;">
+                            Spatial (%)
+                            <input id="slider" type="range" name="points1" min="0" max="3" list="pts" value="0">
+                            <datalist id="pts">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                </datalist>
+                        </div>
+                        <div id="dimension" style="left:30%;">
+                            Temporal (%)
+                            <input id="slider" type="range" name="points1" min="0" max="3" list="pts" value="0">
+                            <datalist id="pts">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                </datalist>
+                        </div>
+                        <div id="dimension" style="left:55%;">
+                            Content (%)
+                            <input id="slider" type="range" name="points1" min="0" max="3" list="pts" value="0">
+                            <datalist id="pts">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                </datalist>
+                        </div>
+                         <button id="reload" type="button" class="btn btn-default" style="color:#4099FF; font-family: fantasy; position: absolute; left:80%; width: 10%;">Reload</button>
+                    </div>
+                    <button id="tweets" type="button" class="btn btn-default" style="color:#4099FF; font-family: fantasy; font-size:12px; position: absolute; top:-35px; left:79%; width: auto; height:25px;" onclick="document.getElementById('streamMaquina') .style.display='none'; document.getElementById('streamNews') .style.display='none'; if(document.getElementById('streamTweets') .style.display=='none') {document.getElementById('streamTweets') .style.display=''}else{document.getElementById('streamTweets') .style.display='none'}">Tweets</button>
+
+                    <button id="news" type="button" class="btn btn-default" style="color:#4099FF; font-family: fantasy; font-size:12px; position: absolute; top:-35px; left:85.1%; width: auto; height:25px;" onclick="document.getElementById('streamTweets') .style.display='none'; document.getElementById('streamMaquina') .style.display='none';if(document.getElementById('streamNews') .style.display=='none') {document.getElementById('streamNews') .style.display=''}else{document.getElementById('streamNews') .style.display='none'}">Sapo News</button>
+
+                    <button id="maquina" type="button" class="btn btn-default" style="color:#4099FF; font-family: fantasy; font-size:12px; position: absolute; top:-35px; left:93%; width: auto; height:25px;" onclick="document.getElementById('streamTweets') .style.display='none'; document.getElementById('streamNews') .style.display='none';if(document.getElementById('streamMaquina') .style.display=='none') {document.getElementById('streamMaquina') .style.display=''}else{document.getElementById('streamMaquina') .style.display='none'}">Maquina do Tempo</button>
+                </div>
+                <div id="map">
+                </div>
+
+                <div id="streamTweets" style="display:none;">
+                        Aqui aparecem Tweets!
+                </div>
+                <div id="streamNews" style="display:none;">
+                        Aqui aparecem Noticias!
+                </div>
+                <div id="streamMaquina" style="display:none;">
+                        Aqui aparecem Pessoas!
+                </div>
+                <!-- <a class="btn btn-default page-scroll" href="#about">Click Me to Scroll Down!</a> -->
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div id="wordcloud"></div>
+                    <div id="timetable"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div id="my-timeline" style="height: 150px; border: 1px solid #aaa"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Contact Section</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- jQuery Version 1.11.0 -->
+    <script src="js/jquery-1.11.0.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Scrolling Nav JavaScript -->
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/scrolling-nav.js"></script>
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Dinosaur', 'Length'],
+          ['Acrocanthosaurus (top-spined lizard)', 12.2],
+          ['Albertosaurus (Alberta lizard)', 9.1],
+          ['Allosaurus (other lizard)', 12.2],
+          ['Apatosaurus (deceptive lizard)', 22.9],
+          ['Archaeopteryx (ancient wing)', 0.9],
+          ['Argentinosaurus (Argentina lizard)', 36.6],
+          ['Baryonyx (heavy claws)', 9.1],
+          ['Brachiosaurus (arm lizard)', 30.5],
+          ['Ceratosaurus (horned lizard)', 6.1],
+          ['Coelophysis (hollow form)', 2.7],
+          ['Compsognathus (elegant jaw)', 0.9],
+          ['Deinonychus (terrible claw)', 2.7],
+          ['Diplodocus (double beam)', 27.1],
+          ['Dromicelomimus (emu mimic)', 3.4],
+          ['Gallimimus (fowl mimic)', 5.5],
+          ['Mamenchisaurus (Mamenchi lizard)', 21.0],
+          ['Megalosaurus (big lizard)', 7.9],
+          ['Microvenator (small hunter)', 1.2],
+          ['Ornithomimus (bird mimic)', 4.6],
+          ['Oviraptor (egg robber)', 1.5],
+          ['Plateosaurus (flat lizard)', 7.9],
+          ['Sauronithoides (narrow-clawed lizard)', 2.0],
+          ['Seismosaurus (tremor lizard)', 45.7],
+          ['Spinosaurus (spiny lizard)', 12.2],
+          ['Supersaurus (super lizard)', 30.5],
+          ['Tyrannosaurus (tyrant lizard)', 15.2],
+          ['Ultrasaurus (ultra lizard)', 30.5],
+          ['Velociraptor (swift robber)', 1.8]]);
+
+        var options = {
+          title: 'Lengths of dinosaurs, in meters',
+          legend: { position: 'none' },
+        };
+
+        var chart = new google.visualization.Histogram(document.getElementById('timetable'));
+        chart.draw(data, options);
+      }
+    </script>
+
+    <link rel="stylesheet" type="text/css" href="http://visapi-gadgets.googlecode.com/svn/trunk/wordcloud/wc.css"/>
+    <script type="text/javascript" src="http://visapi-gadgets.googlecode.com/svn/trunk/wordcloud/wc.js"></script>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+
+    <script type="text/javascript">
+      google.load("visualization", "1");
+      google.setOnLoadCallback(draw);
+      function draw() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Text1');
+        data.addColumn('string', 'Text2');
+        data.addRows(3);
+        data.setCell(0, 0, 'This is a test');
+        data.setCell(0, 1, 'This test is quite hard');
+        data.setCell(1, 0, 'A hard test or not?');
+        data.setCell(1, 1, 'This was not too hard');
+        data.setCell(2, 0, 'Hard hard hard this is so hard !!!');
+        data.setCell(2, 1, 'For every test there is a solution. For every one');
+        var outputDiv = document.getElementById('wordcloud');
+        var wc = new WordCloud(outputDiv);
+        wc.draw(data, null);
+      }
+    </script>
+
+    <script type="text/javascript">
+            var tl;
+            function onLoad() {
+              var bandInfos = [
+                Timeline.createBandInfo({
+                    width:          "70%", 
+                    intervalUnit:   Timeline.DateTime.MONTH, 
+                    intervalPixels: 100
+                }),
+                Timeline.createBandInfo({
+                    width:          "30%", 
+                    intervalUnit:   Timeline.DateTime.YEAR, 
+                    intervalPixels: 200
+                })
+              ];
+              tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+            }
+
+            var resizeTimerID = null;
+            function onResize() {
+                if (resizeTimerID == null) {
+                    resizeTimerID = window.setTimeout(function() {
+                        resizeTimerID = null;
+                        tl.layout();
+                    }, 500);
+                }
+            }
+    </script>
+
+</body>
+
+</html>
