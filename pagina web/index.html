@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="styles2.css">
+<link rel="stylesheet" type="text/css" hrf="jquery.jqplot.min.css" />
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBnMv6QNW-8AeVILsEuahE6k9UqngFmJkQ&sensor=false"></script>
+<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="jqplot.bubbleRenderer.min.js"></script>
+<script type="text/javascript" src="jquery.awesomeCloud-0.2.js"></script>
+<script type="text/javascript" src="tweeprofiles.js"></script>
+</head>
+<body>
+
+<header> 
+	<h1>TweeProfiles2</h1>
+</header>
+
+<div id="left-wrapper">
+
+	<div id="map"></div>
+	<div id="graph"></div>
+	<div id="control">
+		<form>
+			<label for="slider">Time Point: </label>
+			<input id="slider" type="range" name="points" min="0" max="3" list="pts" value="0">
+			<datalist id=pts>
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+			</datalist>
+			
+			<br /> <br />
+			Visualization: 
+			<input type="radio" name="viz" id="radio_geo" value="0" checked />
+            <label for="radio_geo">Spatial</label>
+			<input type="radio" name="viz" id="radio_temp" value="1" />
+            <label for="radio_temp">Temporal</label>
+			Clustering: 
+			<input type="radio" name="clustering" id="radio_micro" value="0" checked />
+            <label for="radio_micro">Micro</label>
+			<input type="radio" name="clustering" id="radio_macro" value="1" />
+            <label for="radio_macro">Macro</label>
+		</form>
+	</div>
+</div>
+
+<div id="right-wrapper">
+	<div id="cluster_info">
+		<h2>&nbsp;Cluster Info</h1>
+		<ul id="info">
+			<li><span>ID: </span><span id="t_id"></span></li>
+			<li><span>Npoints: </span><span id="t_npts"></span></li>
+			<li><span>Nwords: </span><span id="t_nwrds"></span></li>
+			<li><span>Geo: </span><span id="t_geo"></span></li>
+			<li><span>Hour: </span><span id="t_hou"></span></li>
+			<li><span>Weekday: </span><span id="t_wkd"></span></li>
+			<li><span>Weight: </span><span id="t_wei"></span></li>
+			<li><span>Radius: </span><span id="t_rad"></span></li>
+			<li><span>Creation Time: </span><span id="t_ctime"></span></li>		
+			<li><span>Last Edit: </span><span id="t_ltime"></span></li>
+		</ul>
+	</div>
+
+	<div id="wordcloud">
+	</div>
+</div>
+
+
+</body>
+</html>
+

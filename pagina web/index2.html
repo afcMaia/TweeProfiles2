@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="styles.css">
+<link rel="stylesheet" type="text/css" hrf="jquery.jqplot.min.css" />
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBnMv6QNW-8AeVILsEuahE6k9UqngFmJkQ&sensor=false"></script>
+<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="jqplot.bubbleRenderer.min.js"></script>
+<script type="text/javascript" src="jquery.awesomeCloud-0.2.js"></script>
+<script type="text/javascript" src="tweeprofiles.js"></script>
+</head>
+<body>
+
+<div id="left-wrapper">
+	<div id="map_container">
+		<div id="map"></div>
+	</div>
+
+	<div id="graph_container">
+		<div id="graph"></div>
+	</div>
+</div>
+
+<div id="right-wrapper">
+	<div id="control"></div>
+	<div id="cluster_info">
+		<h2>Cluster Info</h1>
+		<ul id="info">
+			<li><span>ID: </span><span id="t_id"></span></li>
+			<li><span>Npoints: </span><span id="t_npts"></span></li>
+			<li><span>Nwords: </span><span id="t_nwrds"></span></li>
+			<li><span>Geo: </span><span id="t_geo"></span></li>
+			<li><span>Hour: </span><span id="t_hou"></span></li>
+			<li><span>Weekday: </span><span id="t_wkd"></span></li>
+			<li><span>Weight: </span><span id="t_wei"></span></li>
+			<li><span>Radius: </span><span id="t_rad"></span></li>
+			<li><span>Creation Time: </span><span id="t_ctime"></span></li>		
+			<li><span>Last Edit: </span><span id="t_ltime"></span></li>
+		</ul>
+	</div>
+
+	<div id="wordcloud">
+	</div>
+</div>
+
+
+
+
+</body>
+</html>
+

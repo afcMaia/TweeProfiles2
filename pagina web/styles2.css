@@ -1,0 +1,82 @@
+body {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto
+}
+
+header {
+	width: 90%;
+	height: 40px;
+	margin-left: 5px;
+}
+
+#left-wrapper {
+	float: left;
+	width:860px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+#right-wrapper {
+	float: left;
+	width: 460px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+#map {
+	border:1px solid #000;
+	width:840px;
+	height:600px;
+	float: left;
+}
+
+
+#graph {
+	border:1px solid #000;
+	width:840px;
+	height:600px;
+	float: left;
+}
+
+#control {
+	border:1px solid #000;
+	width: 840px;
+	height: 90px;
+	float: left;
+	margin-top: 5px;
+}
+
+#cluster_info {
+	border:1px solid #000;
+	width: 440px;
+	height: 300px;
+	float: left;
+	display: block;
+	/*margin-left: 10px*/
+}
+
+#info {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	display: block;
+	margin-left: 10px;
+}
+
+#wordcloud{
+	border:1px solid #000;
+	width:440px;
+	height:390px;
+	float: left;
+	margin-top: 5px;
+	/*margin-left: 10px*/
+}
+
+#slider {
+	width: 90%;
+}
+
+
+
+
