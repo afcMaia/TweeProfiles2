@@ -1,1 +1,0 @@
-"tweetid";"text";"userid";"username";"date";"lat";"lon"

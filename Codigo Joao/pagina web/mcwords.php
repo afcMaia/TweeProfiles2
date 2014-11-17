@@ -1,34 +1,18 @@
 <?php
-$server = 'localhost';
-$user = 'tweeprofiles';
-$pass = 'tweeprofiles';
-$dbname = 'tweeprofiles';
-$con = mysql_connect($server, $user, $pass) or die(mysql_error());
-//echo "Connected to MySQL<br />";
-mysql_select_db($dbname) or die(mysql_error());
-//echo "Connected to Database";
 
-mysql_query("SET NAMES 'utf8'", $con);
+class Mcwords extends CI_Model {
 
-$test = $_GET['test'];
-$id = $_GET['id'];
+    function getAllMicroClustersWords(id, test){
 
-$result = mysql_query("SELECT * FROM micro_cluster_words WHERE test={$test} and mcluster_id={$id}" );
-if (!$result) {
-    echo 'Could not run query: ' . mysql_error();
-    exit;
+        $query = $this->db->query("SELECT * FROM micro_cluster_words WHERE test={$test} and mcluster_id={$id}" );
+
+        // foreach ($query->result() as $row) {
+        //     echo $row->id;
+        //     echo $row->lat;
+        //     echo $row->lon;
+        //     echo $row->text;
+        // }
+        return $query->result();
+    }
+
 }
-
-$a=array();
-
-while($row = mysql_fetch_assoc($result))
-{
-   $a[]=$row;
-}
-
-mysql_close();
-
-header('Content-Type: application/json');
-echo json_encode($a,JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);
-
-?>
