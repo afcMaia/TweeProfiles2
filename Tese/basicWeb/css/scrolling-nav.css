@@ -64,6 +64,17 @@ of those sections to manage the look and feel of the site. */
     left:80%;   
 }
 
+#dimensionsControl{
+    color:#4099FF;
+    font-size:14px;
+    position: absolute;
+    top:-45px;
+    left: 15%;
+    width: 65%;
+    height: 100%;
+    font-family: fantasy;
+}
+
 #controls{
     color:#4099FF;
     font-size:14px;

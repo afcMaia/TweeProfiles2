@@ -100,7 +100,8 @@
             <div class="row">
                 <div class="col-lg-12">
 
-                    <button id="showbutton" type="button" class="btn btn-default" style="color:#4099FF; font-family: fantasy; position: absolute; left:5%; top:-45px; width: 8%;" onclick="if(document.getElementById('controls') .style.display=='none') {document.getElementById('controls') .style.display=''}else{document.getElementById('controls') .style.display='none'}">Dimensions</button>
+                    <button id="showbutton" type="button" class="btn btn-default" style="color:#4099FF; font-family: fantasy; position: absolute; left:5%; top:-45px; width: 8%;" onclick="if(document.getElementById('controls') .style.display=='none') {document.getElementById('controls') .style.display=''; document.getElementById('showDimension') .style.display='none'; document.getElementById('dimensionsControl') .style.display='none'}else{document.getElementById('controls') .style.display='none'; document.getElementById('showDimension') .style.display=''; document.getElementById('dimensionsControl') .style.display='none'}">Filters</button>
+                    <button id="showDimension" type="button" class="btn btn-default" style="color:#4099FF; font-family: fantasy; position: absolute; left:15%; top:-45px; width: 8%;" onclick="if(document.getElementById('dimensionsControl') .style.display=='none') {document.getElementById('dimensionsControl') .style.display=''}else{document.getElementById('dimensionsControl') .style.display='none'}">Dimensions</button>
 
                     <hr noshade="" size="1" width="1150" style="position: absolute; top:-25px; left:5%">
 
@@ -158,6 +159,33 @@
                             </datalist>
                         </div> -->
                     </div>
+
+            <form id="dimensionsControl" style="display:none; position: absolute; top:-55px;">
+            <input type="radio" name="UseDimension" id="radio_allDimensions" value="0" checked/>
+            <label for="radio_allDimensions" style="color:#4099FF; font-family: fantasy; font-size:12px;">All Dimensions </label>
+
+            <input type="radio" name="UseDimension" id="radio_timeDimension" value="1"/>
+            <label for="radio_timeDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Time Dimension </label>
+
+            <input type="radio" name="UseDimension" id="radio_spaceDimension" value="1" />
+            <label for="radio_spaceDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Space Dimension </label>
+
+            <input type="radio" name="UseDimension" id="radio_contentDimension" value="1" />
+            <label for="radio_contentDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Content Dimension </label><br>
+
+            <input type="radio" name="UseDimension" id="radio_timespaceDimension" value="1"/>
+            <label for="radio_timeDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Time and Space </label>
+
+            <input type="radio" name="UseDimension" id="radio_spacecontentDimension" value="1" />
+            <label for="radio_spaceDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Space and Content </label>
+
+            <input type="radio" name="UseDimension" id="radio_contenttimeDimension" value="1" />
+            <label for="radio_contentDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Content and Time </label><br>
+
+            <button id="reloadDim" type="button" class="btn btn-default" style="color:#4099FF; font-family: fantasy; font-size:12px; position: absolute; left:80%; top:20px; width: auto; height:25px;"> Reload</button>
+
+            </form>
+
                     <button id="tweets" type="button" class="btn btn-default" style="color:#4099FF; font-family: fantasy; font-size:12px; position: absolute; top:-35px; left:79%; width: auto; height:25px;" onclick="document.getElementById('streamMaquina') .style.display='none'; document.getElementById('streamNews') .style.display='none'; if(document.getElementById('streamTweets') .style.display=='none') {document.getElementById('streamTweets') .style.display=''}else{document.getElementById('streamTweets') .style.display='none'}">Tweets</button>
 
                     <button id="news" type="button" class="btn btn-default" style="color:#4099FF; font-family: fantasy; font-size:12px; position: absolute; top:-35px; left:85.1%; width: auto; height:25px;" onclick="document.getElementById('streamTweets') .style.display='none'; document.getElementById('streamMaquina') .style.display='none';if(document.getElementById('streamNews') .style.display=='none') {document.getElementById('streamNews') .style.display=''}else{document.getElementById('streamNews') .style.display='none'}">Sapo News</button>
@@ -166,6 +194,17 @@
                 </div>
 
              <!-- <input type="checkbox" value="checked" name="mccheckbox" checked> MicroClusters -->
+
+
+<!--             <input type="checkbox" name="allDimensions" id="checkbox_allDimensions" value="0" checked />
+            <label for="checkbox_allDimensions" style="color:#4099FF; font-family: fantasy; font-size:12px;"=>All Dimensions</label>
+            <input type="checkbox" name="timeDimension" id="checkbox_timeDimension" value="0" />
+            <label for="checkbox_timeDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Time Dimension</label>
+            <input type="checkbox" name="spaceDimension" id="checkbox_spaceDimension" value="0" checked />
+            <label for="checkbox_spaceDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Space Dimensions</label>
+            <input type="checkbox" name="contentDimension" id="checkbox_contentDimension" value="0" checked />
+            <label for="checkbox_contentDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;"=>Content Dimension</label> -->
+    
             <input type="checkbox" name="tweets" id="checkbox_tweets" value="0" checked />
             <label for="checkbox_macro" style="color:#4099FF; font-family: fantasy; font-size:12px;"=>Tweets</label>
             <input type="checkbox" name="microclustering" id="checkbox_micro" value="0" checked />
