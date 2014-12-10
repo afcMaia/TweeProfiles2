@@ -4,7 +4,7 @@ class Microclusters extends CI_Model {
 
     function getAllMicroClusters(){
 
-        $query = $this->db->query('SELECT * FROM micro_clusters ORDER BY nwords DESC LIMIT 250');
+        $query = $this->db->query('SELECT * FROM micro_clusters ORDER BY nwords DESC');
 
         // foreach ($query->result() as $row) {
         //     echo $row->id;

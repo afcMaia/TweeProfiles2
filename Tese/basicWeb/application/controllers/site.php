@@ -3,7 +3,7 @@
 class Site extends CI_Controller {
 
 	public function index(){
-		$this->load->view("view_home");
+		$this->load->view("view_home3");
 		$this->load->helper('url');
 	}
 
@@ -130,4 +130,30 @@ class Site extends CI_Controller {
 
 	header('Access-Control-Allow-Origin: http://localhost:8080');
 	}
+
+	function getNews($id, $today){
+	
+	$url = 'http://services.sapo.pt/InformationRetrieval/Epicentro/GetNews?ESBToken=01.GROnLHWLh7UtJo2XIpn6DA&limit=8&nodesIDs='+$id+'&beginDate=2014-11-20&sectionsIDs=1,2,3,4,5,6,7,8,9&endDate='+$today+'';
+	$data = file_get_contents($url);
+
+    // $this->output->set_content_type('application/json')
+    //              ->set_output(json_encode($data));
+
+	$obj = json_decode($data);
+	echo $obj->access_token;
+
+	header('Access-Control-Allow-Origin: http://localhost:8080');
+	}
+
+	function getMicroIds($id, $type){
+		
+	$this->load->model("microId");
+	$data = $this->microId->getMicroIds($id, $type);
+
+    $this->output->set_content_type('application/json')
+                 ->set_output(json_encode($data));
+
+	header('Access-Control-Allow-Origin: http://localhost:8080');
+	}
 }
+?>

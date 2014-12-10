@@ -45,7 +45,7 @@ function setClusters(t){
          function(data) {
             	items=data;
 		        showClustersMap(items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -60,7 +60,7 @@ function setTimeClusters(t){
          function(data) {
             	items=data;
 		        showClustersMap(items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -75,7 +75,7 @@ function setSpaceClusters(t){
          function(data) {
             	items=data;
 		        showClustersMap(items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -90,7 +90,7 @@ function setContentClusters(t){
          function(data) {
             	items=data;
 		        showClustersMap(items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -105,7 +105,7 @@ function setTimeSpaceClusters(t){
          function(data) {
             	items=data;
 		        showClustersMap(items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -120,7 +120,7 @@ function setSpaceContentClusters(t){
          function(data) {
             	items=data;
 		        showClustersMap(items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -135,7 +135,7 @@ function setContentTimeClusters(t){
          function(data) {
             	items=data;
 		        showClustersMap(items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -149,7 +149,7 @@ function setMicroClusters(t){
          function(data) { 
             	items=data;
 		        showMicroClustersMap(items, t);
-		        // loadTimeline(items);
+		        // //loadTimeline(items);
 		        // showClustersGraph(items);
          }, 'JSON');
 }
@@ -186,6 +186,28 @@ function showMicroClustersMap(items, t){
 			cdate: items[i].creation_d,
 			ldate: items[i].lastedit_d
 			});
+
+		// cityCircle = new google.maps.Circle({
+		// 	clusterid: items[i].id,
+		// 	testid: items[i].test,
+		// 	strokeColor: '#000000',
+		// 	strokeOpacity: 0.15,
+		// 	strokeWeight: 0.75,
+		// 	fillColor: '#4099FF',
+		// 	fillOpacity: 0.15,
+		// 	map: map,
+		// 	center: pos,
+		// 	radius: items[i].nwords * 5000
+		// 	});
+		// var words = [];
+	       
+		//     $.getJSON( 
+	 //        'http://localhost:8080/basicWeb/index.php/site/getMicroClustersWords',
+	 //         {},
+	 //         function(data) { 
+	 //            	words=data;
+	 //            	// showMicroClusterCloud(words);
+	 //    }, 'JSON');
 
 		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id+"<br />"+ " Npoints: "+items[i].n
 		+"<br />"+ " Nwords: "+items[i].nwords
@@ -250,7 +272,7 @@ function showMicroClustersMap(items, t){
 		+"<br />"+ " Nwords: "+items[i].nwords
 		+"<br />"+ " Weight: "+items[i].weight
 		+"<br />"+ " Radius: "+items[i].radius
-		+"<br />"+ " Position: "+items[i].center_lat+" ; "+items[i].center_lon
+		+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
 		+"<br />"+ " Weekday: "+items[i].center_wkd
 		+"<br />"+ " Hour: "+items[i].center_hou
 		+"<br />"+ " Creation Time: "+items[i].creation_d;
@@ -312,7 +334,8 @@ var len = items.length;
 			hou: items[i].center_hou,
 			wkd: items[i].center_wkd,
 			cdate: items[i].creation_d,
-			ldate: items[i].lastedit_d
+			ldate: items[i].lastedit_d,
+			clickable:true
 		});
 
 		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id
@@ -454,7 +477,7 @@ function setTheseMicroClusters(testid){
          function(data) { 
             	items=data;
 		        setTheseMicroClusters_2(items, testid);
-		        // loadTimeline(items);
+		        // //loadTimeline(items);
 		        // showClustersGraph(items);
          }, 'JSON');
 }
@@ -469,7 +492,7 @@ function setTheseMicroClusters_2(mcIds, testid){
          function(data) { 
             	items=data;
 		        showTheseMicroClustersMap(items, mcIds, testid);
-		        // loadTimeline(items);
+		        // //loadTimeline(items);
 		        // showClustersGraph(items);
          }, 'JSON');
 }
@@ -1391,15 +1414,15 @@ function getTimelineMovie(micro, macro, t){
 			ldate: macro[i].lastedit_d
 		});
 
-		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id
-		+"<br />"+ " Npoints: "+items[i].n
-		+"<br />"+ " Nwords: "+items[i].nwords
-		+"<br />"+ " Weight: "+items[i].weight
-		+"<br />"+ " Radius: "+items[i].radius
-		+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-		+"<br />"+ " Weekday: "+items[i].center_wkd
-		+"<br />"+ " Hour: "+items[i].center_hou
-		+"<br />"+ " Creation Time: "+items[i].creation_d;
+		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+macro[i].id
+		+"<br />"+ " Npoints: "+macro[i].n
+		+"<br />"+ " Nwords: "+macro[i].nwords
+		+"<br />"+ " Weight: "+macro[i].weight
+		+"<br />"+ " Radius: "+macro[i].radius
+		+"<br />"+ " Position: "+macro[i].center_lat+";"+macro[i].center_lon
+		+"<br />"+ " Weekday: "+macro[i].center_wkd
+		+"<br />"+ " Hour: "+macro[i].center_hou
+		+"<br />"+ " Creation Time: "+macro[i].creation_d;
 
 		var infowindow = new google.maps.InfoWindow();
 
@@ -1475,7 +1498,7 @@ function getTimelineMovie_macro(micro, t){
          function(data) { 
             	items=data;
 		        getTimelineMovie(micro, items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -1901,28 +1924,28 @@ function showClustersForWord(items, words){
 						});
 
 						var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id
-								+"<br />"+ " Npoints: "+items[i].n
-								+"<br />"+ " Nwords: "+items[i].nwords
-								+"<br />"+ " Weight: "+items[i].weight
-								+"<br />"+ " Radius: "+items[i].radius
-								+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-								+"<br />"+ " Weekday: "+items[i].center_wkd
-								+"<br />"+ " Hour: "+items[i].center_hou
-								+"<br />"+ " Creation Time: "+items[i].creation_d;
+									+"<br />"+ " Npoints: "+items[i].n
+									+"<br />"+ " Nwords: "+items[i].nwords
+									+"<br />"+ " Weight: "+items[i].weight
+									+"<br />"+ " Radius: "+items[i].radius
+									+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
+									+"<br />"+ " Weekday: "+items[i].center_wkd
+									+"<br />"+ " Hour: "+items[i].center_hou
+									+"<br />"+ " Creation Time: "+items[i].creation_d;
 
-								var infowindow = new google.maps.InfoWindow();
+									var infowindow = new google.maps.InfoWindow();
 
-								google.maps.event.addListener(circle,'click', (function(circle,content,infowindow){ 
-								    return function() {
+									google.maps.event.addListener(circle,'click', (function(circle,content,infowindow){ 
+									    return function() {
 
-								    	closeInfos();
+									    	closeInfos();
 
-								    	infowindow.setPosition(circle.getCenter());
-								        infowindow.setContent(content);
-								        infowindow.open(map);
-										infos[0]=infowindow;
-								    };
-								})(circle,content,infowindow));
+									    	infowindow.setPosition(circle.getCenter());
+									        infowindow.setContent(content);
+									        infowindow.open(map);
+											infos[0]=infowindow;
+									    };
+									})(circle,content,infowindow));
 
 						cmarkers.push(circle);
 						

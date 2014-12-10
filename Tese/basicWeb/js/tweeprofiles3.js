@@ -1,8 +1,9 @@
 var map, pointarray, heatmap;
 var microclusters;
 var clusters;
-var mcmarkers;
+var mcmarkers = [];
 var cmarkers = [];
+var pmarkers = [];
 var places;
 var initial = 0;
 var viz = 0;
@@ -12,27 +13,29 @@ var nverbetes = 0;
 var infos = [];
 var people = [];
 var peopleNames = [];
+
 function initialize()
 {
-	// L.mapbox.accessToken = 'pk.eyJ1IjoiaW5zb21uaWFjeSIsImEiOiJVNmZuaUZzIn0.-vyJcMkVt5BsoANudSHA4w';
-	// var map = L.mapbox.map(document.getElementById("map"), 'examples.map-i86nkdio', {
- //        worldCopyJump: true
- //    })
- //    .setView([0, 0], 3);
+	L.mapbox.accessToken = 'pk.eyJ1IjoiaW5zb21uaWFjeSIsImEiOiJVNmZuaUZzIn0.-vyJcMkVt5BsoANudSHA4w';
+	map = L.mapbox.map(document.getElementById("map"), 'examples.map-i86nkdio', {
+        worldCopyJump: true, 
+    })
+    .setView([0, 0], 2);
+
   // cartodb.createVis('map', 'http://mayurilive.cartodb.com/api/v2/viz/994b9f1c-69b0-11e4-b2dd-0e853d047bba/viz.json');
- 	var mapProp = {
-	  center:new google.maps.LatLng(0.0, 0.0),
-	  zoom:2,
-	  mapTypeId: google.maps.MapTypeId.HYBRID,
-	  mapTypeControl: false
-	};
-	map = new google.maps.Map(document.getElementById("map"),mapProp);
+ // 	var mapProp = {
+	//   center:new google.maps.LatLng(0.0, 0.0),
+	//   zoom:2,
+	//   mapTypeId: google.maps.MapTypeId.HYBRID,
+	//   mapTypeControl: false
+	// };
+	// map = new google.maps.Map(document.getElementById("map"),mapProp);
 
-// 	map = L.map('map').setView([0, -0.09], 3);
+	// map = L.map('map').setView([0, -0.09], 3);
 
-// 	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-//     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-// }).addTo(map);
+	// L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+ //    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+	// }).addTo(map);
 }
 
 //funcçao de inicializaçao de todos os clusters
@@ -45,7 +48,7 @@ function setClusters(t){
          function(data) {
             	items=data;
 		        showClustersMap(items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -60,7 +63,7 @@ function setTimeClusters(t){
          function(data) {
             	items=data;
 		        showClustersMap(items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -75,7 +78,7 @@ function setSpaceClusters(t){
          function(data) {
             	items=data;
 		        showClustersMap(items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -90,7 +93,7 @@ function setContentClusters(t){
          function(data) {
             	items=data;
 		        showClustersMap(items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -105,7 +108,7 @@ function setTimeSpaceClusters(t){
          function(data) {
             	items=data;
 		        showClustersMap(items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -120,7 +123,7 @@ function setSpaceContentClusters(t){
          function(data) {
             	items=data;
 		        showClustersMap(items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -135,7 +138,7 @@ function setContentTimeClusters(t){
          function(data) {
             	items=data;
 		        showClustersMap(items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -149,13 +152,21 @@ function setMicroClusters(t){
          function(data) { 
             	items=data;
 		        showMicroClustersMap(items, t);
-		        // loadTimeline(items);
+		        // //loadTimeline(items);
 		        // showClustersGraph(items);
          }, 'JSON');
 }
 
 //funcçao de visualizaçao de microClusters
 function showMicroClustersMap(items, t){
+
+var customCircleMarker = L.CircleMarker.extend({
+	   options: { 
+	      clusterid: 'Custom data!',
+	      testid: 'More data!'
+		   }
+		});
+
 	if(t == 0){
 	var len = items.length;
 	
@@ -167,59 +178,50 @@ function showMicroClustersMap(items, t){
 	//alert(items.len);
 
 	for(var i = 0; i < len; i++){
-		// var marker = L.marker([items[i].center_lon, items[i].center_lat]).addTo(map);
-		var pos = new google.maps.LatLng(items[i].center_lon, items[i].center_lat);
-		var marker = new google.maps.Marker({
-			position: pos,
-			icon:'image/tweet2.png',
-			map:map,
-			clusterid: items[i].id,
-			testid: items[i].test,
-			npts: items[i].n,
-			nwrds: items[i].nwords,
-			weight: items[i].weight,
-			cradius: items[i].radius,
-			lat: items[i].center_lat,
-			lon: items[i].center_lon,
-			hou: items[i].center_hou,
-			wkd: items[i].center_wkd,
-			cdate: items[i].creation_d,
-			ldate: items[i].lastedit_d
-			});
 
-		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id+"<br />"+ " Npoints: "+items[i].n
-		+"<br />"+ " Nwords: "+items[i].nwords
-		+"<br />"+ " Weight: "+items[i].weight
-		+"<br />"+ " Radius: "+items[i].radius
-		+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-		+"<br />"+ " Weekday: "+items[i].center_wkd
-		+"<br />"+ " Hour: "+items[i].center_hou
-		+"<br />"+ " Creation Time: "+items[i].creation_d;
+		// marker = L.marker([items[i].center_lon, items[i].center_lat]).addTo(map);
 
-		var infowindow = new google.maps.InfoWindow();
+		// circle = L.circle([items[i].center_lon, items[i].center_lat], 10000, {
+		//     color: 'blue',
+		//     fillColor: '#4099FF',
+		//     fillOpacity: 0.5,
+		//     clusterid: items[i].id,
+		// }).addTo(map);
 
-		google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
-		    return function() {
+		var circle = new customCircleMarker([items[i].center_lon, items[i].center_lat], {
+			color: 'blue',
+		    fillColor: '#4099FF',
+		    fillOpacity: 0.5, 
+		    radius: items[i].radius*7.5,
+		    clusterid: items[i].id,
+		    testid: items[i].test
+		}).addTo(map);
 
-		    	closeInfos();
+		circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+items[i].id+
+			"</b><br><b style=color:#4099FF;>Npoints: "+items[i].n+
+			"</b><br><b style=color:#4099FF;>Nwords: "+items[i].nwords+
+			"</b><br><b style=color:#4099FF;>Weight: "+items[i].weight+
+			"</b><br><b style=color:#4099FF;>Radius: "+items[i].radius+
+			"</b><br><b style=color:#4099FF;>Latitude: "+items[i].center_lat+" ; Longitude: "+items[i].center_lon+
+			"</b><br><b style=color:#4099FF;>Weekday: "+items[i].center_wkd+
+			"</b><br><b style=color:#4099FF;>Hour: "+items[i].center_hou+
+			"</b><br><b style=color:#4099FF;>Creation Time: "+items[i].creation_d+"</b>")
 
-		        infowindow.setContent(content);
-		        infowindow.open(map,marker);
-		        setTimeout(function () { infowindow.close(); }, 10000);
-				infos[0]=infowindow;
-		    };
-		})(marker,content,infowindow));
-		mcmarkers.push(marker);
+		mcmarkers.push(circle);
 
-		google.maps.event.addListener(marker, 'click', function() {
-    		// showInfo(this);
-			showThisClusterCloud(this.clusterid, 0);
-			showThisClusterGraph(this.clusterid, 0);
-  		});	
-	}
-	// google.maps.event.addListener(marker, 'load', function() {
-	// setMicroClusterCloud();
-	// });
+		circle.addEventListener("click", function() {
+			// showInfo(this);
+			console.log(this.options.clusterid);
+			showThisClusterCloud(this.options.clusterid, 0);
+			showThisClusterGraph(this.options.clusterid, 0);
+  		});
+
+		// google.maps.event.addListener(marker, 'click', function() {
+  //   		// showInfo(this);
+		// 	showThisClusterCloud(this.clusterid, 0);
+		// 	showThisClusterGraph(this.clusterid, 0);
+  // 		});	
+		}
 	} else{
 
 	var len = items.length;
@@ -227,54 +229,33 @@ function showMicroClustersMap(items, t){
 	//alert(items.len);
 	for(var i = 0; i < len; i++){
 		if(items[i].center_wkd == t){
-			var pos = new google.maps.LatLng(items[i].center_lon, items[i].center_lat);
-			var marker = new google.maps.Marker({
-			position: pos,
-			icon:'image/tweet2.png',
-			map:map,
-			clusterid: items[i].id,
-			testid: items[i].test,
-			npts: items[i].n,
-			nwrds: items[i].nwords,
-			weight: items[i].weight,
-			cradius: items[i].radius,
-			lat: items[i].center_lat,
-			lon: items[i].center_lon,
-			hou: items[i].center_hou,
-			wkd: items[i].center_wkd,
-			cdate: items[i].creation_d,
-			ldate: items[i].lastedit_d
-			});
+			
+		var circle = new customCircleMarker([items[i].center_lon, items[i].center_lat], {
+			color: 'blue',
+		    fillColor: '#4099FF',
+		    fillOpacity: 0.5, 
+		    radius: items[i].radius*7.5,
+		    clusterid: items[i].id,
+		    testid: items[i].test
+		}).addTo(map);
 
-		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id+"<br />"+ " Npoints: "+items[i].n
-		+"<br />"+ " Nwords: "+items[i].nwords
-		+"<br />"+ " Weight: "+items[i].weight
-		+"<br />"+ " Radius: "+items[i].radius
-		+"<br />"+ " Position: "+items[i].center_lat+" ; "+items[i].center_lon
-		+"<br />"+ " Weekday: "+items[i].center_wkd
-		+"<br />"+ " Hour: "+items[i].center_hou
-		+"<br />"+ " Creation Time: "+items[i].creation_d;
+			circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+items[i].id+
+			"</b><br><b style=color:#4099FF;>Npoints: "+items[i].n+
+			"</b><br><b style=color:#4099FF;>Nwords: "+items[i].nwords+
+			"</b><br><b style=color:#4099FF;>Weight: "+items[i].weight+
+			"</b><br><b style=color:#4099FF;>Radius: "+items[i].radius+
+			"</b><br><b style=color:#4099FF;>Latitude: "+items[i].center_lat+" ; Longitude: "+items[i].center_lon+
+			"</b><br><b style=color:#4099FF;>Weekday: "+items[i].center_wkd+
+			"</b><br><b style=color:#4099FF;>Hour: "+items[i].center_hou+
+			"</b><br><b style=color:#4099FF;>Creation Time: "+items[i].creation_d+"</b>")
 
-		var infowindow = new google.maps.InfoWindow();
+		mcmarkers.push(circle);
 
-		google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
-		    return function() {
-
-		    	closeInfos();
-
-		        infowindow.setContent(content);
-		        infowindow.open(map,marker);
-		        setTimeout(function () { infowindow.close(); }, 10000);
-				infos[0]=infowindow;
-		    };
-		})(marker,content,infowindow));
-		mcmarkers.push(marker);
-
-		google.maps.event.addListener(marker, 'click', function() {
-    		// showInfo(this);
-			showThisClusterCloud(this.clusterid, 0);
-			showThisClusterGraph(this.clusterid, 0);
-  		});	
+		circle.addEventListener("click", function() {
+			// showInfo(this);
+			showThisClusterCloud(this.options.clusterid, 0);
+			showThisClusterGraph(this.options.clusterid, 0);
+  		});
 		}
 		
 	}
@@ -286,66 +267,53 @@ function showMicroClustersMap(items, t){
 
 //funcçao de visualizaçao de todos os clusters
 function showClustersMap(items, t){
+
+	var customCircleMarker = L.CircleMarker.extend({
+	   options: { 
+	      clusterid: 'Custom data!',
+	      testid: 'More data!'
+		   }
+		});
+
 if(t == 0){
 var len = items.length;	
 	cmarkers = [];
+
+
 	for(var i = 0; i < len; i++){
-		var pos = new google.maps.LatLng(items[i].center_lon, items[i].center_lat);
-		
-		var circle = new google.maps.Circle({
-			center:pos,
-			radius:items[i].radius*20200*175,
-			strokeColor:"#000000",
-			strokeOpacity:0.8,
-			strokeWeight:0.75,
-			fillColor:"#4099FF",
-			fillOpacity:0.4,
-			map:map,
-			clusterid: items[i].id,
-			testid: items[i].test,
-			npts: items[i].n,
-			nwrds: items[i].nwords,
-			weight: items[i].weight,
-			cradius: items[i].radius,
-			lat: items[i].center_lat,
-			lon: items[i].center_lon,
-			hou: items[i].center_hou,
-			wkd: items[i].center_wkd,
-			cdate: items[i].creation_d,
-			ldate: items[i].lastedit_d
-		});
 
-		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id
-		+"<br />"+ " Npoints: "+items[i].n
-		+"<br />"+ " Nwords: "+items[i].nwords
-		+"<br />"+ " Weight: "+items[i].weight
-		+"<br />"+ " Radius: "+items[i].radius
-		+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-		+"<br />"+ " Weekday: "+items[i].center_wkd
-		+"<br />"+ " Hour: "+items[i].center_hou
-		+"<br />"+ " Creation Time: "+items[i].creation_d;
+		var circle = new customCircleMarker([items[i].center_lon, items[i].center_lat], {
+			color: 'green',
+		    fillColor: '#5ADB98',
+		    fillOpacity: 0.5, 
+		    radius: items[i].radius*100,
+		    clusterid: items[i].id,
+		    testid: items[i].test
+		}).addTo(map);
 
-		var infowindow = new google.maps.InfoWindow();
+		circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+items[i].id+
+			"</b><br><b style=color:#4099FF;>Npoints: "+items[i].n+
+			"</b><br><b style=color:#4099FF;>Nwords: "+items[i].nwords+
+			"</b><br><b style=color:#4099FF;>Weight: "+items[i].weight+
+			"</b><br><b style=color:#4099FF;>Radius: "+items[i].radius+
+			"</b><br><b style=color:#4099FF;>Latitude: "+items[i].center_lat+" ; Longitude: "+items[i].center_lon+
+			"</b><br><b style=color:#4099FF;>Weekday: "+items[i].center_wkd+
+			"</b><br><b style=color:#4099FF;>Hour: "+items[i].center_hou+
+			"</b><br><b style=color:#4099FF;>Creation Time: "+items[i].creation_d+"</b>")
 
-		google.maps.event.addListener(circle,'click', (function(circle,content,infowindow){ 
-		    return function() {
-
-		    	closeInfos();
-
-		    	infowindow.setPosition(circle.getCenter());
-		        infowindow.setContent(content);
-		        infowindow.open(map);
-				infos[0]=infowindow;
-		    };
-		})(circle,content,infowindow));
-
+				// google.maps.event.addListener(circle, 'click', function() {
+  //   			// showInfo(this);
+		// 		showThisClusterCloud(this.clusterid, 1);
+		// 		showThisClusterGraph(this.clusterid, 1);
+		// 		setTheseMicroClusters(this.testid);
+  // 		});
 		cmarkers.push(circle);
-		
-		google.maps.event.addListener(circle, 'click', function() {
+
+		circle.addEventListener("click", function() {
     			// showInfo(this);
-				showThisClusterCloud(this.clusterid, 1);
-				showThisClusterGraph(this.clusterid, 1);
-				setTheseMicroClusters(this.testid);
+				showThisClusterCloud(this.options.clusterid, 1);
+				showThisClusterGraph(this.options.clusterid, 1);
+				setTheseMicroClusters(this.options.testid);
   		});
 	}
 }else{
@@ -353,62 +321,33 @@ var len = items.length;
 	cmarkers = [];
 	for(var i = 0; i < len; i++){
 		if(items[i].center_wkd == t){
-		var pos = new google.maps.LatLng(items[i].center_lon, items[i].center_lat);
 		
-		var circle = new google.maps.Circle({
-			center:pos,
-			radius:items[i].radius*20200*175,
-			strokeColor:"#000000",
-			strokeOpacity:0.8,
-			strokeWeight:0.75,
-			fillColor:"#4099FF",
-			fillOpacity:0.4,
-			map:map,
-			clusterid: items[i].id,
-			testid: items[i].test,
-			npts: items[i].n,
-			nwrds: items[i].nwords,
-			weight: items[i].weight,
-			cradius: items[i].radius,
-			lat: items[i].center_lat,
-			lon: items[i].center_lon,
-			hou: items[i].center_hou,
-			wkd: items[i].center_wkd,
-			cdate: items[i].creation_d,
-			ldate: items[i].lastedit_d
-		});
+		var circle = new customCircleMarker([items[i].center_lon, items[i].center_lat], {
+			color: 'green',
+		    fillColor: '#5ADB98',
+		    fillOpacity: 0.5, 
+		    radius: items[i].radius*100,
+		    clusterid: items[i].id,
+		    testid: items[i].test
+		}).addTo(map);
 
-		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id
-		+"<br />"+ " Npoints: "+items[i].n
-		+"<br />"+ " Nwords: "+items[i].nwords
-		+"<br />"+ " Weight: "+items[i].weight
-		+"<br />"+ " Radius: "+items[i].radius
-		+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-		+"<br />"+ " Weekday: "+items[i].center_wkd
-		+"<br />"+ " Hour: "+items[i].center_hou
-		+"<br />"+ " Creation Time: "+items[i].creation_d;
+			cmarkers.push(circle);
 
-		var infowindow = new google.maps.InfoWindow();
-
-		google.maps.event.addListener(circle,'click', (function(circle,content,infowindow){ 
-		    return function() {
-
-		    	closeInfos();
-
-		    	infowindow.setPosition(circle.getCenter());
-		        infowindow.setContent(content);
-		        infowindow.open(map);
-				infos[0]=infowindow;
-		    };
-		})(circle,content,infowindow));
-
-		cmarkers.push(circle);
+		circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+items[i].id+
+			"</b><br><b style=color:#4099FF;>Npoints: "+items[i].n+
+			"</b><br><b style=color:#4099FF;>Nwords: "+items[i].nwords+
+			"</b><br><b style=color:#4099FF;>Weight: "+items[i].weight+
+			"</b><br><b style=color:#4099FF;>Radius: "+items[i].radius+
+			"</b><br><b style=color:#4099FF;>Latitude: "+items[i].center_lat+" ; Longitude: "+items[i].center_lon+
+			"</b><br><b style=color:#4099FF;>Weekday: "+items[i].center_wkd+
+			"</b><br><b style=color:#4099FF;>Hour: "+items[i].center_hou+
+			"</b><br><b style=color:#4099FF;>Creation Time: "+items[i].creation_d+"</b>")
 		
-		google.maps.event.addListener(circle, 'click', function() {
+		addEventListener(circle, 'click', function() {
     			// showInfo(this);
-				showThisClusterCloud(this.clusterid, 1);
-				showThisClusterGraph(this.clusterid, 1);
-				setTheseMicroClusters(this.testid);
+				showThisClusterCloud(this.options.clusterid, 1);
+				showThisClusterGraph(this.options.clusterid, 1);
+				setTheseMicroClusters(this.options.testid);
   		});
 	}
 	}
@@ -445,7 +384,7 @@ function setTheseMicroClusters(testid){
 		}
 
 		for (var i = 0; i < mcmarkers.length; i++ ) {
-		mcmarkers[i].setMap(null);
+			map.removeLayer(mcmarkers[i]);
 		}
 
 	    $.getJSON( 
@@ -454,7 +393,7 @@ function setTheseMicroClusters(testid){
          function(data) { 
             	items=data;
 		        setTheseMicroClusters_2(items, testid);
-		        // loadTimeline(items);
+		        // //loadTimeline(items);
 		        // showClustersGraph(items);
          }, 'JSON');
 }
@@ -469,13 +408,20 @@ function setTheseMicroClusters_2(mcIds, testid){
          function(data) { 
             	items=data;
 		        showTheseMicroClustersMap(items, mcIds, testid);
-		        // loadTimeline(items);
+		        // //loadTimeline(items);
 		        // showClustersGraph(items);
          }, 'JSON');
 }
 
 //funcçao de visualizaçao de micro
 function showTheseMicroClustersMap(items, mcIds, testid){
+
+var customCircleMarker = L.CircleMarker.extend({
+	   options: { 
+	      clusterid: 'Custom data!',
+	      testid: 'More data!'
+		   }
+		});
 
 	var len = items.length;
 	var mcIlen = mcIds.length;
@@ -488,53 +434,34 @@ function showTheseMicroClustersMap(items, mcIds, testid){
 		for (var j = 0; j < mcIlen; j++) {
 
 		if(items[i].id == mcIds[j].mcIDS){
-		var pos = new google.maps.LatLng(items[i].center_lon, items[i].center_lat);
-		var marker = new google.maps.Marker({
-			position: pos,
-			icon:'image/tweet2.png',
-			map:map,
-			clusterid: items[i].id,
-			testid: items[i].test,
-			npts: items[i].n,
-			nwrds: items[i].nwords,
-			weight: items[i].weight,
-			cradius: items[i].radius,
-			lat: items[i].center_lat,
-			lon: items[i].center_lon,
-			hou: items[i].center_hou,
-			wkd: items[i].center_wkd,
-			cdate: items[i].creation_d,
-			ldate: items[i].lastedit_d
-			});
+		
+		var circle = new customCircleMarker([items[i].center_lon, items[i].center_lat], {
+			color: 'blue',
+		    fillColor: '#4099FF',
+		    fillOpacity: 0.5, 
+		    radius: items[i].radius*7.5,
+		    clusterid: items[i].id,
+		    testid: items[i].test
+		}).addTo(map);
 
-		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id+"<br />"+ " Npoints: "+items[i].n
-		+"<br />"+ " Nwords: "+items[i].nwords
-		+"<br />"+ " Weight: "+items[i].weight
-		+"<br />"+ " Radius: "+items[i].radius
-		+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-		+"<br />"+ " Weekday: "+items[i].center_wkd
-		+"<br />"+ " Hour: "+items[i].center_hou
-		+"<br />"+ " Creation Time: "+items[i].creation_d;
+		circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+items[i].id+
+			"</b><br><b style=color:#4099FF;>Npoints: "+items[i].n+
+			"</b><br><b style=color:#4099FF;>Nwords: "+items[i].nwords+
+			"</b><br><b style=color:#4099FF;>Weight: "+items[i].weight+
+			"</b><br><b style=color:#4099FF;>Radius: "+items[i].radius+
+			"</b><br><b style=color:#4099FF;>Latitude: "+items[i].center_lat+" ; Longitude: "+items[i].center_lon+
+			"</b><br><b style=color:#4099FF;>Weekday: "+items[i].center_wkd+
+			"</b><br><b style=color:#4099FF;>Hour: "+items[i].center_hou+
+			"</b><br><b style=color:#4099FF;>Creation Time: "+items[i].creation_d+"</b>")
 
-		var infowindow = new google.maps.InfoWindow();
+		mcmarkers.push(circle);
 
-		google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
-		    return function() {
-
-		    	closeInfos();
-
-		        infowindow.setContent(content);
-		        infowindow.open(map,marker);
-		        setTimeout(function () { infowindow.close(); }, 10000);
-				infos[0]=infowindow;
-		    };
-		})(marker,content,infowindow));
-		mcmarkers.push(marker);
-
-		google.maps.event.addListener(marker, 'click', function() {
-			showThisClusterCloud(this.clusterid, 0);
-			showThisClusterGraph(this.clusterid, 0);
-  		});	
+		circle.addEventListener("click", function() {
+			// showInfo(this);
+			console.log(this.options.clusterid);
+			showThisClusterCloud(this.options.clusterid, 0);
+			showThisClusterGraph(this.options.clusterid, 0);
+  		});
 	}
 	}
 }
@@ -542,58 +469,6 @@ function showTheseMicroClustersMap(items, mcIds, testid){
 	console.log("microclusters:", mcmarkers.length);
 }
 
-//funcçao de inicilizaçao da cloud para microClusters
-function setMicroClusterCloud(){
-
-	var words = [];
-       
-	    $.getJSON( 
-        'http://localhost:8080/basicWeb/index.php/site/getMicroClustersWords',
-         {},
-         function(data) { 
-            	words=data;
-    }, 'JSON');
-}
-
-// function showMicroClusterCloud(words){
-
-// 	var frequency_list = [];
-// 	var len = words.length;
-//     //.text(function(d) { return d.word; }) // THE SOLUTION
-
-//    	for(var i = 0; i < len; i++){
-// 		    if(words[i].word != ' ' && words[i].freq > 1){
-// 		    frequency_list.push({"text":words[i].word,"size":(words[i].freq*5)});
-// 		}
-// 	}
-
-//     d3.layout.cloud().size([350, 300])
-//             .words(frequency_list, function(d) {
-//             	for(var i = 0; i < frequency_list.length; i++){
-// 			    return {text: d.text, size: d.size};
-// 				}
-// 			  })
-//             .padding(1)
-//             .rotate(function() { return ~~(Math.random() * 2) * 90; })
-//             .font("Impact")
-//             .fontSize(function(d) { return d.size; })
-//             .on("end", draw)
-//             .start();
-//   // ************************************
-
-//     // d3.layout.cloud().size([300, 300])
-//     //   .words([
-//     //     "Hello", "world", "normally", "you", "want", "more", "words",
-//     //     "than", "this"].map(function(d) {
-//     //     return {text: d, size: 10 + Math.random() * 90};
-//     //   }))
-//     //   .padding(5)
-//     //   .rotate(function() { return ~~(Math.random() * 2) * 90; })
-//     //   .font("Impact")
-//     //   .fontSize(function(d) { return d.size; })
-//     //   .on("end", draw)
-//     //   .start();
-// }
 
 //funcçao de inicilizaçao da cloud para Clusters
 function setClusterCloud(){
@@ -717,7 +592,6 @@ function showThisClusterCloud(id, x){
 
  	var len = words.length;
 	var htmlcode = "";
-
 	for(var i = 0; i < len; i++){
 		if(words[i].mcluster_id == id){
 			// if(words[i].word != ' ' && words[i].freq > 2){
@@ -1101,19 +975,19 @@ function showTweets(items){
 	for (var i=0;i<len;i++){
 
 	if(i < (len/4)){
-		// var content = '<div id="contenttweets" href="www.twitter.com/'+items[i].username+'" style="font-family:fantasy; font-size:14px">'+items[i].username+":"+items[i].text+"</br>";
+		// var content = '<div id="contenttweets" href="www.twitter.com/'+items[i].username+'" style="font-family:fantasy; font-size:14px">'+items[i].username+": "+items[i].text+"</br>";
 		// theDiv.innerHTML += content;
-		var content = '<div id="contenttweets" style="font-family: fantasy;"> <a style="color:#4099FF;" href="http://www.twitter.com/'+items[i].username+'">"'+items[i].username+'"</a>'+":"+items[i].text+"</br>"+"</div>";
+		var content = '<div id="contenttweets" style="font-family: fantasy;"> <a style="color:#4099FF;" href="http://www.twitter.com/'+items[i].username+'">"'+items[i].username+'"</a>'+": "+items[i].text+"</br>"+"</div>";
 		theDiv.innerHTML += content;
 	}else if((len/4) <= i < (len/2)){
-		var content = '<div id="contenttweets" style="font-family: fantasy;"> <a style="color:#4099FF;" href="http://www.twitter.com/'+items[i].username+'">"'+items[i].username+'"</a>'+":"+items[i].text+"</br>"+"</div>";
+		var content = '<div id="contenttweets" style="font-family: fantasy;"> <a style="color:#4099FF;" href="http://www.twitter.com/'+items[i].username+'">"'+items[i].username+'"</a>'+": "+items[i].text+"</br>"+"</div>";
 		theDiv.innerHTML += content;
 	}else if((len/2) <= i < (3*len/4)){
-		var content = '<div id="contenttweets" style="font-family: fantasy;"> <a style="color:#4099FF;" href="http://www.twitter.com/'+items[i].username+'">"'+items[i].username+'"</a>'+":"+items[i].text+"</br>"+"</div>";
+		var content = '<div id="contenttweets" style="font-family: fantasy;"> <a style="color:#4099FF;" href="http://www.twitter.com/'+items[i].username+'">"'+items[i].username+'"</a>'+": "+items[i].text+"</br>"+"</div>";
 		theDiv.innerHTML += content;
 	}
 	else{
-		var content = '<div id="contenttweets" style="font-family: fantasy;"> <a style="color:#4099FF;" href="http://www.twitter.com/'+items[i].username+'">"'+items[i].username+'"</a>'+":"+items[i].text+"</br>"+"</div>";
+		var content = '<div id="contenttweets" style="font-family: fantasy;"> <a style="color:#4099FF;" href="http://www.twitter.com/'+items[i].username+'">"'+items[i].username+'"</a>'+": "+items[i].text+"</br>"+"</div>";
 		theDiv.innerHTML += content;
 	}
 	}
@@ -1123,109 +997,55 @@ function showTweets(items){
 function showPlaces(items){
 
 	var len = items.length;
-	console.log('tweets', len);
-	pmarkers = [];
-	var taxiData = [];
+	
+	var tweetIcon = L.icon({
+	    iconUrl: 'image/tweet.png',
+
+	    iconSize:     [15, 20], // size of the icon
+	    // shadowSize:   [50, 64], // size of the shadow
+	    // iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+	    // shadowAnchor: [4, 62],  // the same for the shadow
+	    // popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+	});
+
 	// for(var i = 0; i < len; i++){
 	// 	L.marker(items[i].lat, items[i].lat).addTo(map);
 	// }
 	// +++++++++++++ MARKERS ++++++++++++++++
-// 		for(var i = 0; i < len; i++){
-// 		var myLatlng = new google.maps.LatLng(items[i].lon,items[i].lat);
+		for(var i = 0; i < len; i++){
 
-// 		var image = {
-// 	    url: 'image/tweet.png',
-// 		    origin: new google.maps.Point(0,0),
-// 		    size: new google.maps.Size(30, 32)
-// 		};
+		marker = L.marker([items[i].lon, items[i].lat], {icon: tweetIcon}).addTo(map);
 
-// 		var marker = new google.maps.Marker({
-// 			position: myLatlng,
-// 			icon: image,
-// 			map: map,
-// 			title: items[i].text
-// 		});
+		marker.bindPopup("<b style=color:#4099FF;>User: "+items[i].username+
+			"</b><br><b style=color:#4099FF;>Latitude: "+items[i].lat+" ; Longitude: "+items[i].lon+
+			"</b><br><b style=color:#4099FF;>Tweet: "+items[i].text+"</b>");
 
-// 		var content = '<div id="content">'+items[i].id+" - "+items[i].text;
-// 		var infowindow = new google.maps.InfoWindow();
-
-// 		google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
-// 		    return function() {
-
-// 		    	closeInfos();
-
-// 		        infowindow.setContent(content);
-// 		        infowindow.open(map,marker);
-// 				infos[0]=infowindow;
-// 		    };
-// 		})(marker,content,infowindow));
-// 	}
-// }
+		pmarkers.push(marker);
+}
+console.log('tweets', pmarkers.length);
 // ++++++++++++++++++++++++++ 
 
-// +++++++++++++++++ HEATMAP ++++++++++++++++++
-for(var i = 0; i < len; i++){
-taxiData.push(new google.maps.LatLng(items[i].lon,items[i].lat));
+}
+
+//funcçao para permitir visualizaçao de tweets
+function displayTweets()
+{
+	clust = $(this).val();
+
+	if($(this).is(":checked") && clust == "0")
+	{
+			for(var i = 0; i < pmarkers.length; i++){
+				// mcmarkers[i].setMap(map);
+				map.addLayer(pmarkers[i]);
+			}
 	}
-
-  var pointArray = new google.maps.MVCArray(taxiData);
-
-  heatmap = new google.maps.visualization.HeatmapLayer({
-    data: pointArray
-  });
-
-  heatmap.setMap(map);
-	// google.maps.event.addListener(marker, 'load', initialize);
-}
-
-function toggleHeatmap() {
-  heatmap.setMap(heatmap.getMap() ? null : map);
-}
-
-function changeGradient() {
-  var gradient = [
-    'rgba(0, 255, 255, 0)',
-    'rgba(0, 255, 255, 1)',
-    'rgba(0, 191, 255, 1)',
-    'rgba(0, 127, 255, 1)',
-    'rgba(0, 63, 255, 1)',
-    'rgba(0, 0, 255, 1)',
-    'rgba(0, 0, 223, 1)',
-    'rgba(0, 0, 191, 1)',
-    'rgba(0, 0, 159, 1)',
-    'rgba(0, 0, 127, 1)',
-    'rgba(63, 0, 91, 1)',
-    'rgba(127, 0, 63, 1)',
-    'rgba(191, 0, 31, 1)',
-    'rgba(255, 0, 0, 1)'
-  ]
-  heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
-}
-
-function changeRadius() {
-  heatmap.set('radius', heatmap.get('radius') ? null : 20);
-}
-
-function changeOpacity() {
-  heatmap.set('opacity', heatmap.get('opacity') ? null : 0.5);
-}
-// ++++++++++++++++++++++++++++++++++++++
-
-
-function closeInfos(){
- 
-   if(infos.length > 0){
- 
-      /* detach the info-window from the marker ... undocumented in the API docs */
-      infos[0].set("marker", null);
-      infos[0].set("circle", null);
- 
-      /* and close it */
-      infos[0].close();
- 
-      /* blank the array */
-      infos.length = 0;
-   }
+	else
+	{
+			for(var i = 0; i < pmarkers.length; i++){
+				// mcmarkers[i].setMap(null);
+				map.removeLayer(pmarkers[i]);
+			}
+	}
 }
 
 //funcçao para permitir visualizaçao de microClusters
@@ -1236,13 +1056,15 @@ function displayMicro()
 	if($(this).is(":checked") && clust == "0")
 	{
 			for(var i = 0; i < mcmarkers.length; i++){
-				mcmarkers[i].setMap(map);
+				// mcmarkers[i].setMap(map);
+				map.addLayer(mcmarkers[i]);
 			}
 	}
 	else
 	{
 			for(var i = 0; i < mcmarkers.length; i++){
-				mcmarkers[i].setMap(null);
+				// mcmarkers[i].setMap(null);
+				map.removeLayer(mcmarkers[i]);
 			}
 	}
 }
@@ -1255,13 +1077,15 @@ function displayMacro()
 	if($(this).is(":checked") && clust == "0")
 	{
 			for(var i = 0; i < cmarkers.length; i++){
-				cmarkers[i].setMap(map);
+				// cmarkers[i].setMap(map);
+				map.addLayer(cmarkers[i]);
 			}
 	}
 	else
 	{
 			for(var i = 0; i < cmarkers.length; i++){
-				cmarkers[i].setMap(null);
+				// cmarkers[i].setMap(null);
+				map.removeLayer(cmarkers[i]);
 			}
 	}
 }
@@ -1300,7 +1124,12 @@ function getTimelineMovie(micro, macro, t){
 
     var currentdate = new Date(); 
 	var datetime = currentdate.getDate();
-
+	var customCircleMarker = L.CircleMarker.extend({
+	   options: { 
+	      clusterid: 'Custom data!',
+	      testid: 'More data!'
+		   }
+		});
 
 	for (var i = 0; i < micro.length; i++) {
 
@@ -1308,54 +1137,35 @@ function getTimelineMovie(micro, macro, t){
 			var newStartDate = dStart.getUTCDate();
 
 			if((datetime - newStartDate) == t || (datetime - newStartDate) == -t){
-			var pos = new google.maps.LatLng(micro[i].center_lon, micro[i].center_lat);
-			var marker = new google.maps.Marker({
-			position: pos,
-			icon:'image/tweet2.png',
-			map:map,
-			clusterid: micro[i].id,
-			testid: micro[i].test,
-			npts: micro[i].n,
-			nwrds: micro[i].nwords,
-			weight: micro[i].weight,
-			cradius: micro[i].radius,
-			lat: micro[i].center_lat,
-			lon: micro[i].center_lon,
-			hou: micro[i].center_hou,
-			wkd: micro[i].center_wkd,
-			cdate: micro[i].creation_d,
-			ldate: micro[i].lastedit_d
-			});
 
-		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+micro[i].id+"<br />"+ " Npoints: "+micro[i].n
-		+"<br />"+ " Nwords: "+micro[i].nwords
-		+"<br />"+ " Weight: "+micro[i].weight
-		+"<br />"+ " Radius: "+micro[i].radius
-		+"<br />"+ " Position: "+micro[i].center_lat+";"+micro[i].center_lon
-		+"<br />"+ " Weekday: "+micro[i].center_wkd
-		+"<br />"+ " Hour: "+micro[i].center_hou
-		+"<br />"+ " Creation Time: "+micro[i].creation_d;
+			var circle = new customCircleMarker([micro[i].center_lon, micro[i].center_lat], {
+			color: 'blue',
+		    fillColor: '#4099FF',
+		    fillOpacity: 0.5, 
+		    radius: items[i].radius*7.5,
+		    clusterid: micro[i].id,
+		    testid: micro[i].test
+		}).addTo(map);
 
-		var infowindow = new google.maps.InfoWindow();
+		circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+micro[i].id+
+			"</b><br><b style=color:#4099FF;>Npoints: "+micro[i].n+
+			"</b><br><b style=color:#4099FF;>Nwords: "+micro[i].nwords+
+			"</b><br><b style=color:#4099FF;>Weight: "+micro[i].weight+
+			"</b><br><b style=color:#4099FF;>Radius: "+micro[i].radius+
+			"</b><br><b style=color:#4099FF;>Latitude: " +micro[i].center_lat+" ; Longitude: "+micro[i].center_lon+
+			"</b><br><b style=color:#4099FF;>Weekday: "+micro[i].center_wkd+
+			"</b><br><b style=color:#4099FF;>Hour: "+micro[i].center_hou+
+			"</b><br><b style=color:#4099FF;>Creation Time: "+micro[i].creation_d+"</b>")
 
-		google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
-		    return function() {
+		mcmarkers.push(circle);
 
-		    	closeInfos();
+		circle.addEventListener("click", function() {
+			// showInfo(this);
+			console.log(this.options.clusterid);
+			showThisClusterCloud(this.options.clusterid, 0);
+			showThisClusterGraph(this.options.clusterid, 0);
+  		});
 
-		        infowindow.setContent(content);
-		        infowindow.open(map,marker);
-		        setTimeout(function () { infowindow.close(); }, 10000);
-				infos[0]=infowindow;
-		    };
-		})(marker,content,infowindow));
-		mcmarkers.push(marker);
-
-		google.maps.event.addListener(marker, 'click', function() {
-    		// showInfo(this);
-			showThisClusterCloud(this.clusterid, 0);
-			showThisClusterGraph(this.clusterid, 0);
-  		});	
 		}
 	}
 
@@ -1366,63 +1176,37 @@ function getTimelineMovie(micro, macro, t){
 			var newStartDate = dStart.getUTCDate();
 
 			if((datetime - newStartDate) == t || (datetime - newStartDate) == -t){
-			var pos = new google.maps.LatLng(macro[i].center_lon, macro[i].center_lat);
-		
-		var circle = new google.maps.Circle({
-			center:pos,
-			radius:macro[i].radius*20200*175,
-			strokeColor:"#000000",
-			strokeOpacity:0.8,
-			strokeWeight:0.75,
-			fillColor:"#4099FF",
-			fillOpacity:0.4,
-			map:map,
-			clusterid: macro[i].id,
-			testid: macro[i].test,
-			npts: macro[i].n,
-			nwrds: macro[i].nwords,
-			weight: macro[i].weight,
-			cradius: macro[i].radius,
-			lat: macro[i].center_lat,
-			lon: macro[i].center_lon,
-			hou: macro[i].center_hou,
-			wkd: macro[i].center_wkd,
-			cdate: macro[i].creation_d,
-			ldate: macro[i].lastedit_d
-		});
+			
+			var circle = new customCircleMarker([macro[i].center_lon, macro[i].center_lat], {
+			color: 'green',
+		    fillColor: '#5ADB98',
+		    fillOpacity: 0.5, 
+		    radius: items[i].radius*100,
+		    clusterid: macro[i].id,
+		    testid: macro[i].test
+		}).addTo(map);
 
-		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id
-		+"<br />"+ " Npoints: "+items[i].n
-		+"<br />"+ " Nwords: "+items[i].nwords
-		+"<br />"+ " Weight: "+items[i].weight
-		+"<br />"+ " Radius: "+items[i].radius
-		+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-		+"<br />"+ " Weekday: "+items[i].center_wkd
-		+"<br />"+ " Hour: "+items[i].center_hou
-		+"<br />"+ " Creation Time: "+items[i].creation_d;
-
-		var infowindow = new google.maps.InfoWindow();
-
-		google.maps.event.addListener(circle,'click', (function(circle,content,infowindow){ 
-		    return function() {
-
-		    	closeInfos();
-
-		    	infowindow.setPosition(circle.getCenter());
-		        infowindow.setContent(content);
-		        infowindow.open(map);
-				infos[0]=infowindow;
-		    };
-		})(circle,content,infowindow));
+		circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+macro[i].id+
+			"</b><br><b style=color:#4099FF;>Npoints: "+macro[i].n+
+			"</b><br><b style=color:#4099FF;>Nwords: "+macro[i].nwords+
+			"</b><br><b style=color:#4099FF;>Weight: "+macro[i].weight+
+			"</b><br><b style=color:#4099FF;>Radius: "+macro[i].radius+
+			"</b><br><b style=color:#4099FF;>Latitude: " +macro[i].center_lat+" ; Longitude: "+macro[i].center_lon+
+			"</b><br><b style=color:#4099FF;>Weekday: "+macro[i].center_wkd+
+			"</b><br><b style=color:#4099FF;>Hour: "+macro[i].center_hou+
+			"</b><br><b style=color:#4099FF;>Creation Time: "+macro[i].creation_d+"</b>")
 
 		cmarkers.push(circle);
-		
-		google.maps.event.addListener(circle, 'click', function() {
-    			// showInfo(this);
-				showThisClusterCloud(this.clusterid, 1);
-				showThisClusterGraph(this.clusterid, 1);
-				setTheseMicroClusters(this.testid);
-  		});	
+
+		circle.addEventListener("click", function() {
+			// showInfo(this);
+			console.log(this.options.clusterid);
+			showThisClusterCloud(this.options.clusterid, 1);
+			showThisClusterGraph(this.options.clusterid, 1);
+			setTheseMicroClusters(this.options.testid);
+  		});
+
+
 		}
 	}
 
@@ -1475,7 +1259,7 @@ function getTimelineMovie_macro(micro, t){
          function(data) { 
             	items=data;
 		        getTimelineMovie(micro, items, t);
-		        loadTimeline(items);
+		        //loadTimeline(items);
 		        showClustersGraph(items);
          }, 'JSON');
 }
@@ -1542,11 +1326,13 @@ function sliderChanged() {
 //funcçao para remover micro/macro do mapa
 function clearOverlays() {
 	for (var i = 0; i < mcmarkers.length; i++ ) {
-		mcmarkers[i].setMap(null);
+		// mcmarkers[i].setMap(null);
+		map.removeLayer(mcmarkers[i]);
 	}
 	mcmarkers = [];
 	for (var i = 0; i < cmarkers.length; i++ ) {
-		cmarkers[i].setMap(null);
+		// cmarkers[i].setMap(null);
+		map.removeLayer(cmarkers[i]);
 	}
 	cmarkers = [];
 }
@@ -1711,7 +1497,12 @@ function setMicroClustersForWord_2(items){
 //funcçao de visualizaçao para busca de palavras
 function showMicroClustersForWord(items, words){
 	var wordValue = document.getElementById('searchWord').value;
-
+	var customCircleMarker = L.CircleMarker.extend({
+	   options: { 
+	      clusterid: 'Custom data!',
+	      testid: 'More data!'
+		   }
+		});
 	console.log(wordValue);
 
 	for (var j = 0; j < words.length; j++) {
@@ -1720,54 +1511,33 @@ function showMicroClustersForWord(items, words){
 			for (var i = 0; i < items.length; i++) {
 				if (items[i].id == words[j].mcluster_id) {
 
-								var pos = new google.maps.LatLng(items[i].center_lon, items[i].center_lat);
-								var marker = new google.maps.Marker({
-								position: pos,
-								icon:'image/tweet2.png',
-								map:map,
-								clusterid: items[i].id,
-								testid: items[i].test,
-								npts: items[i].n,
-								nwrds: items[i].nwords,
-								weight: items[i].weight,
-								cradius: items[i].radius,
-								lat: items[i].center_lat,
-								lon: items[i].center_lon,
-								hou: items[i].center_hou,
-								wkd: items[i].center_wkd,
-								cdate: items[i].creation_d,
-								ldate: items[i].lastedit_d
-								});
+								var circle = new customCircleMarker([items[i].center_lon, items[i].center_lat], {
+								color: 'blue',
+							    fillColor: '#4099FF',
+							    fillOpacity: 0.5, 
+							    radius: items[i].radius*7.5,
+							    clusterid: items[i].id,
+							    testid: items[i].test
+							}).addTo(map);
 
-							var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id+"<br />"+ " Npoints: "+items[i].n
-							+"<br />"+ " Nwords: "+items[i].nwords
-							+"<br />"+ " Weight: "+items[i].weight
-							+"<br />"+ " Radius: "+items[i].radius
-							+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-							+"<br />"+ " Weekday: "+items[i].center_wkd
-							+"<br />"+ " Hour: "+items[i].center_hou
-							+"<br />"+ " Creation Time: "+items[i].creation_d;
+							circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+items[i].id+
+								"</b><br><b style=color:#4099FF;>Npoints: "+items[i].n+
+								"</b><br><b style=color:#4099FF;>Nwords: "+items[i].nwords+
+								"</b><br><b style=color:#4099FF;>Weight: "+items[i].weight+
+								"</b><br><b style=color:#4099FF;>Radius: "+items[i].radius+
+								"</b><br><b style=color:#4099FF;>Latitude: "+items[i].center_lat+" ; Longitude: "+items[i].center_lon+
+								"</b><br><b style=color:#4099FF;>Weekday: "+items[i].center_wkd+
+								"</b><br><b style=color:#4099FF;>Hour: "+items[i].center_hou+
+								"</b><br><b style=color:#4099FF;>Creation Time: "+items[i].creation_d+"</b>")
 
-							var infowindow = new google.maps.InfoWindow();
+							mcmarkers.push(circle);
 
-							google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
-							    return function() {
-
-							    	closeInfos();
-
-							        infowindow.setContent(content);
-							        infowindow.open(map,marker);
-							        setTimeout(function () { infowindow.close(); }, 10000);
-									infos[0]=infowindow;
-							    };
-							})(marker,content,infowindow));
-							mcmarkers.push(marker);
-
-							google.maps.event.addListener(marker, 'click', function() {
-					    		// showInfo(this);
-								showThisClusterCloud(this.clusterid, 0);
-								showThisClusterGraph(this.clusterid, 0);
-					  		});	
+							circle.addEventListener("click", function() {
+								// showInfo(this);
+								console.log(this.options.clusterid);
+								showThisClusterCloud(this.options.clusterid, 0);
+								showThisClusterGraph(this.options.clusterid, 0);
+					  		});
 					
 				}
 			}
@@ -1868,6 +1638,12 @@ function setClustersForWord_2(items){
 //funcçao de visualizaçao para busca de palavras
 function showClustersForWord(items, words){
 	var wordValue = document.getElementById('searchWord').value;
+	var customCircleMarker = L.CircleMarker.extend({
+	   options: { 
+	      clusterid: 'Custom data!',
+	      testid: 'More data!'
+		   }
+		});
 
 	for (var j = 0; j < words.length; j++) {
 		if (words[j].word == wordValue) {
@@ -1875,61 +1651,33 @@ function showClustersForWord(items, words){
 			for (var i = 0; i < items.length; i++) {
 				if (items[i].id == words[j].cluster_id) {
 
-						var pos = new google.maps.LatLng(items[i].center_lon, items[i].center_lat);
-						
-						var circle = new google.maps.Circle({
-							center:pos,
-							radius:items[i].radius*20200*175,
-							strokeColor:"#000000",
-							strokeOpacity:0.8,
-							strokeWeight:0.75,
-							fillColor:"#4099FF",
-							fillOpacity:0.4,
-							map:map,
-							clusterid: items[i].id,
-							testid: items[i].test,
-							npts: items[i].n,
-							nwrds: items[i].nwords,
-							weight: items[i].weight,
-							cradius: items[i].radius,
-							lat: items[i].center_lat,
-							lon: items[i].center_lon,
-							hou: items[i].center_hou,
-							wkd: items[i].center_wkd,
-							cdate: items[i].creation_d,
-							ldate: items[i].lastedit_d
-						});
+						var circle = new customCircleMarker([items[i].center_lon, items[i].center_lat], {
+							color: 'green',
+						    fillColor: '#5ADB98',
+						    fillOpacity: 0.5, 
+						    radius: items[i].radius*100,
+						    clusterid: items[i].id,
+						    testid: items[i].test
+						}).addTo(map);
 
-						var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id
-								+"<br />"+ " Npoints: "+items[i].n
-								+"<br />"+ " Nwords: "+items[i].nwords
-								+"<br />"+ " Weight: "+items[i].weight
-								+"<br />"+ " Radius: "+items[i].radius
-								+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-								+"<br />"+ " Weekday: "+items[i].center_wkd
-								+"<br />"+ " Hour: "+items[i].center_hou
-								+"<br />"+ " Creation Time: "+items[i].creation_d;
-
-								var infowindow = new google.maps.InfoWindow();
-
-								google.maps.event.addListener(circle,'click', (function(circle,content,infowindow){ 
-								    return function() {
-
-								    	closeInfos();
-
-								    	infowindow.setPosition(circle.getCenter());
-								        infowindow.setContent(content);
-								        infowindow.open(map);
-										infos[0]=infowindow;
-								    };
-								})(circle,content,infowindow));
+						circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+items[i].id+
+							"</b><br><b style=color:#4099FF;>Npoints: "+items[i].n+
+							"</b><br><b style=color:#4099FF;>Nwords: "+items[i].nwords+
+							"</b><br><b style=color:#4099FF;>Weight: "+items[i].weight+
+							"</b><br><b style=color:#4099FF;>Radius: "+items[i].radius+
+							"</b><br><b style=color:#4099FF;>Latitude: "+items[i].center_lat+" ; Longitude: "+items[i].center_lon+
+							"</b><br><b style=color:#4099FF;>Weekday: "+items[i].center_wkd+
+							"</b><br><b style=color:#4099FF;>Hour: "+items[i].center_hou+
+							"</b><br><b style=color:#4099FF;>Creation Time: "+items[i].creation_d+"</b>")
 
 						cmarkers.push(circle);
-						
-						google.maps.event.addListener(circle, 'click', function() {
-				    			// showInfo(this);
-								showThisClusterCloud(this.clusterid, 1);
-								showThisClusterGraph(this.clusterid, 1);
+
+						circle.addEventListener("click", function() {
+							// showInfo(this);
+							console.log(this.options.clusterid);
+							showThisClusterCloud(this.options.clusterid, 1);
+							showThisClusterGraph(this.options.clusterid, 1);
+							setTheseMicroClusters(this.options.testid);
 				  		});
 					
 				}
@@ -2070,115 +1818,78 @@ function showMicroClustersRegion(items, t){
 
   	var len = items.length;
 	mcmarkers = [];
-
+	var customCircleMarker = L.CircleMarker.extend({
+	   options: { 
+	      clusterid: 'Custom data!',
+	      testid: 'More data!'
+		   }
+		});
   	for(var i = 0; i < len; i++){
 
 if(t == 1){
   			if((items[i].center_lat > -170) && (items[i].center_lat < -30)){
   			if((items[i].center_lon > -60) && (items[i].center_lon < 85)){
 
-  			var pos = new google.maps.LatLng(items[i].center_lon, items[i].center_lat);
-  			var marker = new google.maps.Marker({
-			position: pos,
-			icon:'image/tweet2.png',
-			map:map,
-			clusterid: items[i].id,
-			testid: items[i].test,
-			npts: items[i].n,
-			nwrds: items[i].nwords,
-			weight: items[i].weight,
-			cradius: items[i].radius,
-			lat: items[i].center_lat,
-			lon: items[i].center_lon,
-			hou: items[i].center_hou,
-			wkd: items[i].center_wkd,
-			cdate: items[i].creation_d,
-			ldate: items[i].lastedit_d
-			});
+  			var circle = new customCircleMarker([items[i].center_lon, items[i].center_lat], {
+							color: 'blue',
+						    fillColor: '#4099FF',
+						    fillOpacity: 0.5, 
+						    radius: items[i].radius*7.5,
+						    clusterid: items[i].id,
+						    testid: items[i].test
+						}).addTo(map);
 
-		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id+"<br />"+ " Npoints: "+items[i].n
-		+"<br />"+ " Nwords: "+items[i].nwords
-		+"<br />"+ " Weight: "+items[i].weight
-		+"<br />"+ " Radius: "+items[i].radius
-		+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-		+"<br />"+ " Weekday: "+items[i].center_wkd
-		+"<br />"+ " Hour: "+items[i].center_hou
-		+"<br />"+ " Creation Time: "+items[i].creation_d;
+						circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+items[i].id+
+							"</b><br><b style=color:#4099FF;>Npoints: "+items[i].n+
+							"</b><br><b style=color:#4099FF;>Nwords: "+items[i].nwords+
+							"</b><br><b style=color:#4099FF;>Weight: "+items[i].weight+
+							"</b><br><b style=color:#4099FF;>Radius: "+items[i].radius+
+							"</b><br><b style=color:#4099FF;>Latitude: "+items[i].center_lat+" ; Longitude: "+items[i].center_lon+
+							"</b><br><b style=color:#4099FF;>Weekday: "+items[i].center_wkd+
+							"</b><br><b style=color:#4099FF;>Hour: "+items[i].center_hou+
+							"</b><br><b style=color:#4099FF;>Creation Time: "+items[i].creation_d+"</b>")
 
-		var infowindow = new google.maps.InfoWindow();
+						mcmarkers.push(circle);
 
-		google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
-		    return function() {
-
-		    	closeInfos();
-
-		        infowindow.setContent(content);
-		        infowindow.open(map,marker);
-		        setTimeout(function () { infowindow.close(); }, 10000);
-				infos[0]=infowindow;
-		    };
-		})(marker,content,infowindow));
-		mcmarkers.push(marker);
-
-		google.maps.event.addListener(marker, 'click', function() {
-    		// showInfo(this);
-			showThisClusterCloud(this.clusterid, 0);
-			showThisClusterGraph(this.clusterid, 0);
-  		});	
+						circle.addEventListener("click", function() {
+							// showInfo(this);
+							console.log(this.options.clusterid);
+							showThisClusterCloud(this.options.clusterid, 0);
+							showThisClusterGraph(this.options.clusterid, 0);
+				  		});
   			}
   		}
   	}else if(t == 2){
   			if((items[i].center_lat > -29) && (items[i].center_lat < 185)){
   			if((items[i].center_lon > 31) && (items[i].center_lon < 85)){
 
-  			var pos = new google.maps.LatLng(items[i].center_lon, items[i].center_lat);
-  			var marker = new google.maps.Marker({
-			position: pos,
-			icon:'image/tweet2.png',
-			map:map,
-			clusterid: items[i].id,
-			testid: items[i].test,
-			npts: items[i].n,
-			nwrds: items[i].nwords,
-			weight: items[i].weight,
-			cradius: items[i].radius,
-			lat: items[i].center_lat,
-			lon: items[i].center_lon,
-			hou: items[i].center_hou,
-			wkd: items[i].center_wkd,
-			cdate: items[i].creation_d,
-			ldate: items[i].lastedit_d
-			});
+  			var circle = new customCircleMarker([items[i].center_lon, items[i].center_lat], {
+							color: 'blue',
+						    fillColor: '#4099FF',
+						    fillOpacity: 0.5, 
+						    radius: items[i].radius*7.5,
+						    clusterid: items[i].id,
+						    testid: items[i].test
+						}).addTo(map);
 
-		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id+"<br />"+ " Npoints: "+items[i].n
-		+"<br />"+ " Nwords: "+items[i].nwords
-		+"<br />"+ " Weight: "+items[i].weight
-		+"<br />"+ " Radius: "+items[i].radius
-		+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-		+"<br />"+ " Weekday: "+items[i].center_wkd
-		+"<br />"+ " Hour: "+items[i].center_hou
-		+"<br />"+ " Creation Time: "+items[i].creation_d;
+						circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+items[i].id+
+							"</b><br><b style=color:#4099FF;>Npoints: "+items[i].n+
+							"</b><br><b style=color:#4099FF;>Nwords: "+items[i].nwords+
+							"</b><br><b style=color:#4099FF;>Weight: "+items[i].weight+
+							"</b><br><b style=color:#4099FF;>Radius: "+items[i].radius+
+							"</b><br><b style=color:#4099FF;>Latitude: "+items[i].center_lat+" ; Longitude: "+items[i].center_lon+
+							"</b><br><b style=color:#4099FF;>Weekday: "+items[i].center_wkd+
+							"</b><br><b style=color:#4099FF;>Hour: "+items[i].center_hou+
+							"</b><br><b style=color:#4099FF;>Creation Time: "+items[i].creation_d+"</b>")
 
-		var infowindow = new google.maps.InfoWindow();
+						mcmarkers.push(circle);
 
-		google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
-		    return function() {
-
-		    	closeInfos();
-
-		        infowindow.setContent(content);
-		        infowindow.open(map,marker);
-		        setTimeout(function () { infowindow.close(); }, 10000);
-				infos[0]=infowindow;
-		    };
-		})(marker,content,infowindow));
-		mcmarkers.push(marker);
-
-		google.maps.event.addListener(marker, 'click', function() {
-    		// showInfo(this);
-			showThisClusterCloud(this.clusterid, 0);
-			showThisClusterGraph(this.clusterid, 0);
-  		});	
+						circle.addEventListener("click", function() {
+							// showInfo(this);
+							console.log(this.options.clusterid);
+							showThisClusterCloud(this.options.clusterid, 0);
+							showThisClusterGraph(this.options.clusterid, 0);
+				  		});
   			}
   		}
 
@@ -2187,54 +1898,33 @@ if(t == 1){
   	  		if((items[i].center_lat > -29) && (items[i].center_lat < 185)){
   			if((items[i].center_lon > -60) && (items[i].center_lon < 30)){
 
-  			var pos = new google.maps.LatLng(items[i].center_lon, items[i].center_lat);
-  			var marker = new google.maps.Marker({
-			position: pos,
-			icon:'image/tweet2.png',
-			map:map,
-			clusterid: items[i].id,
-			testid: items[i].test,
-			npts: items[i].n,
-			nwrds: items[i].nwords,
-			weight: items[i].weight,
-			cradius: items[i].radius,
-			lat: items[i].center_lat,
-			lon: items[i].center_lon,
-			hou: items[i].center_hou,
-			wkd: items[i].center_wkd,
-			cdate: items[i].creation_d,
-			ldate: items[i].lastedit_d
-			});
+  			var circle = new customCircleMarker([items[i].center_lon, items[i].center_lat], {
+							color: 'blue',
+						    fillColor: '#4099FF',
+						    fillOpacity: 0.5, 
+						    radius: items[i].radius*7.5,
+						    clusterid: items[i].id,
+						    testid: items[i].test
+						}).addTo(map);
 
-		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id+"<br />"+ " Npoints: "+items[i].n
-		+"<br />"+ " Nwords: "+items[i].nwords
-		+"<br />"+ " Weight: "+items[i].weight
-		+"<br />"+ " Radius: "+items[i].radius
-		+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-		+"<br />"+ " Weekday: "+items[i].center_wkd
-		+"<br />"+ " Hour: "+items[i].center_hou
-		+"<br />"+ " Creation Time: "+items[i].creation_d;
+						circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+items[i].id+
+							"</b><br><b style=color:#4099FF;>Npoints: "+items[i].n+
+							"</b><br><b style=color:#4099FF;>Nwords: "+items[i].nwords+
+							"</b><br><b style=color:#4099FF;>Weight: "+items[i].weight+
+							"</b><br><b style=color:#4099FF;>Radius: "+items[i].radius+
+							"</b><br><b style=color:#4099FF;>Latitude: "+items[i].center_lat+" ; Longitude: "+items[i].center_lon+
+							"</b><br><b style=color:#4099FF;>Weekday: "+items[i].center_wkd+
+							"</b><br><b style=color:#4099FF;>Hour: "+items[i].center_hou+
+							"</b><br><b style=color:#4099FF;>Creation Time: "+items[i].creation_d+"</b>")
 
-		var infowindow = new google.maps.InfoWindow();
+						mcmarkers.push(circle);
 
-		google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
-		    return function() {
-
-		    	closeInfos();
-
-		        infowindow.setContent(content);
-		        infowindow.open(map,marker);
-		        setTimeout(function () { infowindow.close(); }, 10000);
-				infos[0]=infowindow;
-		    };
-		})(marker,content,infowindow));
-		mcmarkers.push(marker);
-
-		google.maps.event.addListener(marker, 'click', function() {
-    		// showInfo(this);
-			showThisClusterCloud(this.clusterid, 0);
-			showThisClusterGraph(this.clusterid, 0);
-  		});	
+						circle.addEventListener("click", function() {
+							// showInfo(this);
+							console.log(this.options.clusterid);
+							showThisClusterCloud(this.options.clusterid, 0);
+							showThisClusterGraph(this.options.clusterid, 0);
+				  		});
   			}
   		}
   }
@@ -2256,62 +1946,34 @@ if(t == 1){
 
 		var len = items.length;	
 
-		var pos = new google.maps.LatLng(items[i].center_lon, items[i].center_lat);
-		
-		var circle = new google.maps.Circle({
-			center:pos,
-			radius:items[i].radius*20200*175,
-			strokeColor:"#000000",
-			strokeOpacity:0.8,
-			strokeWeight:0.75,
-			fillColor:"#4099FF",
-			fillOpacity:0.4,
-			map:map,
-			clusterid: items[i].id,
-			testid: items[i].test,
-			npts: items[i].n,
-			nwrds: items[i].nwords,
-			weight: items[i].weight,
-			cradius: items[i].radius,
-			lat: items[i].center_lat,
-			lon: items[i].center_lon,
-			hou: items[i].center_hou,
-			wkd: items[i].center_wkd,
-			cdate: items[i].creation_d,
-			ldate: items[i].lastedit_d
-		});
+		var circle = new customCircleMarker([items[i].center_lon, items[i].center_lat], {
+							color: 'green',
+						    fillColor: '#5ADB98',
+						    fillOpacity: 0.5, 
+						    radius: items[i].radius*100,
+						    clusterid: items[i].id,
+						    testid: items[i].test
+						}).addTo(map);
 
-		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id
-		+"<br />"+ " Npoints: "+items[i].n
-		+"<br />"+ " Nwords: "+items[i].nwords
-		+"<br />"+ " Weight: "+items[i].weight
-		+"<br />"+ " Radius: "+items[i].radius
-		+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-		+"<br />"+ " Weekday: "+items[i].center_wkd
-		+"<br />"+ " Hour: "+items[i].center_hou
-		+"<br />"+ " Creation Time: "+items[i].creation_d;
+						circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+items[i].id+
+							"</b><br><b style=color:#4099FF;>Npoints: "+items[i].n+
+							"</b><br><b style=color:#4099FF;>Nwords: "+items[i].nwords+
+							"</b><br><b style=color:#4099FF;>Weight: "+items[i].weight+
+							"</b><br><b style=color:#4099FF;>Radius: "+items[i].radius+
+							"</b><br><b style=color:#4099FF;>Latitude: "+items[i].center_lat+" ; Longitude: "+items[i].center_lon+
+							"</b><br><b style=color:#4099FF;>Weekday: "+items[i].center_wkd+
+							"</b><br><b style=color:#4099FF;>Hour: "+items[i].center_hou+
+							"</b><br><b style=color:#4099FF;>Creation Time: "+items[i].creation_d+"</b>")
 
-		var infowindow = new google.maps.InfoWindow();
+						cmarkers.push(circle);
 
-		google.maps.event.addListener(circle,'click', (function(circle,content,infowindow){ 
-		    return function() {
-
-		    	closeInfos();
-
-		    	infowindow.setPosition(circle.getCenter());
-		        infowindow.setContent(content);
-		        infowindow.open(map);
-				infos[0]=infowindow;
-		    };
-		})(circle,content,infowindow));
-
-		cmarkers.push(circle);
-		
-		google.maps.event.addListener(circle, 'click', function() {
-    			// showInfo(this);
-				showThisClusterCloud(this.clusterid, 1);
-				showThisClusterGraph(this.clusterid, 1);
-  		});
+						circle.addEventListener("click", function() {
+							// showInfo(this);
+							console.log(this.options.clusterid);
+							showThisClusterCloud(this.options.clusterid, 1);
+							showThisClusterGraph(this.options.clusterid, 1);
+							setTheseMicroClusters(this.options.testid);
+				  		});
   			}
   		}
   	}else if(t == 2){
@@ -2320,62 +1982,34 @@ if(t == 1){
 
   	var len = items.length;	
 
-		var pos = new google.maps.LatLng(items[i].center_lon, items[i].center_lat);
-		
-		var circle = new google.maps.Circle({
-			center:pos,
-			radius:items[i].radius*20200*175,
-			strokeColor:"#000000",
-			strokeOpacity:0.8,
-			strokeWeight:0.75,
-			fillColor:"#4099FF",
-			fillOpacity:0.4,
-			map:map,
-			clusterid: items[i].id,
-			testid: items[i].test,
-			npts: items[i].n,
-			nwrds: items[i].nwords,
-			weight: items[i].weight,
-			cradius: items[i].radius,
-			lat: items[i].center_lat,
-			lon: items[i].center_lon,
-			hou: items[i].center_hou,
-			wkd: items[i].center_wkd,
-			cdate: items[i].creation_d,
-			ldate: items[i].lastedit_d
-		});
+		var circle = new customCircleMarker([items[i].center_lon, items[i].center_lat], {
+							color: 'green',
+						    fillColor: '#5ADB98',
+						    fillOpacity: 0.5, 
+						    radius: items[i].radius*100,
+						    clusterid: items[i].id,
+						    testid: items[i].test
+						}).addTo(map);
 
-		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id
-		+"<br />"+ " Npoints: "+items[i].n
-		+"<br />"+ " Nwords: "+items[i].nwords
-		+"<br />"+ " Weight: "+items[i].weight
-		+"<br />"+ " Radius: "+items[i].radius
-		+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-		+"<br />"+ " Weekday: "+items[i].center_wkd
-		+"<br />"+ " Hour: "+items[i].center_hou
-		+"<br />"+ " Creation Time: "+items[i].creation_d;
+						circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+items[i].id+
+							"</b><br><b style=color:#4099FF;>Npoints: "+items[i].n+
+							"</b><br><b style=color:#4099FF;>Nwords: "+items[i].nwords+
+							"</b><br><b style=color:#4099FF;>Weight: "+items[i].weight+
+							"</b><br><b style=color:#4099FF;>Radius: "+items[i].radius+
+							"</b><br><b style=color:#4099FF;>Latitude: "+items[i].center_lat+" ; Longitude: "+items[i].center_lon+
+							"</b><br><b style=color:#4099FF;>Weekday: "+items[i].center_wkd+
+							"</b><br><b style=color:#4099FF;>Hour: "+items[i].center_hou+
+							"</b><br><b style=color:#4099FF;>Creation Time: "+items[i].creation_d+"</b>")
 
-		var infowindow = new google.maps.InfoWindow();
+						cmarkers.push(circle);
 
-		google.maps.event.addListener(circle,'click', (function(circle,content,infowindow){ 
-		    return function() {
-
-		    	closeInfos();
-
-		    	infowindow.setPosition(circle.getCenter());
-		        infowindow.setContent(content);
-		        infowindow.open(map);
-				infos[0]=infowindow;
-		    };
-		})(circle,content,infowindow));
-
-		cmarkers.push(circle);
-		
-		google.maps.event.addListener(circle, 'click', function() {
-    			// showInfo(this);
-				showThisClusterCloud(this.clusterid, 1);
-				showThisClusterGraph(this.clusterid, 1);
-  		});
+						circle.addEventListener("click", function() {
+							// showInfo(this);
+							console.log(this.options.clusterid);
+							showThisClusterCloud(this.options.clusterid, 1);
+							showThisClusterGraph(this.options.clusterid, 1);
+							setTheseMicroClusters(this.options.testid);
+				  		});
   			}
   		}
 
@@ -2386,62 +2020,34 @@ if(t == 1){
 
  var len = items.length;	
 
-		var pos = new google.maps.LatLng(items[i].center_lon, items[i].center_lat);
-		
-		var circle = new google.maps.Circle({
-			center:pos,
-			radius:items[i].radius*20200*175,
-			strokeColor:"#000000",
-			strokeOpacity:0.8,
-			strokeWeight:0.75,
-			fillColor:"#4099FF",
-			fillOpacity:0.4,
-			map:map,
-			clusterid: items[i].id,
-			testid: items[i].test,
-			npts: items[i].n,
-			nwrds: items[i].nwords,
-			weight: items[i].weight,
-			cradius: items[i].radius,
-			lat: items[i].center_lat,
-			lon: items[i].center_lon,
-			hou: items[i].center_hou,
-			wkd: items[i].center_wkd,
-			cdate: items[i].creation_d,
-			ldate: items[i].lastedit_d
-		});
+		var circle = new customCircleMarker([items[i].center_lon, items[i].center_lat], {
+							color: 'green',
+						    fillColor: '#5ADB98',
+						    fillOpacity: 0.5, 
+						    radius: items[i].radius*100,
+						    clusterid: items[i].id,
+						    testid: items[i].test
+						}).addTo(map);
 
-		var content = '<div id="content" style="color:#4099FF;">'+"Cluster ID:"+items[i].id
-		+"<br />"+ " Npoints: "+items[i].n
-		+"<br />"+ " Nwords: "+items[i].nwords
-		+"<br />"+ " Weight: "+items[i].weight
-		+"<br />"+ " Radius: "+items[i].radius
-		+"<br />"+ " Position: "+items[i].center_lat+";"+items[i].center_lon
-		+"<br />"+ " Weekday: "+items[i].center_wkd
-		+"<br />"+ " Hour: "+items[i].center_hou
-		+"<br />"+ " Creation Time: "+items[i].creation_d;
+						circle.bindPopup("<b style=color:#4099FF;>Cluster ID: "+items[i].id+
+							"</b><br><b style=color:#4099FF;>Npoints: "+items[i].n+
+							"</b><br><b style=color:#4099FF;>Nwords: "+items[i].nwords+
+							"</b><br><b style=color:#4099FF;>Weight: "+items[i].weight+
+							"</b><br><b style=color:#4099FF;>Radius: "+items[i].radius+
+							"</b><br><b style=color:#4099FF;>Latitude: "+items[i].center_lat+" ; Longitude: "+items[i].center_lon+
+							"</b><br><b style=color:#4099FF;>Weekday: "+items[i].center_wkd+
+							"</b><br><b style=color:#4099FF;>Hour: "+items[i].center_hou+
+							"</b><br><b style=color:#4099FF;>Creation Time: "+items[i].creation_d+"</b>")
 
-		var infowindow = new google.maps.InfoWindow();
+						cmarkers.push(circle);
 
-		google.maps.event.addListener(circle,'click', (function(circle,content,infowindow){ 
-		    return function() {
-
-		    	closeInfos();
-
-		    	infowindow.setPosition(circle.getCenter());
-		        infowindow.setContent(content);
-		        infowindow.open(map);
-				infos[0]=infowindow;
-		    };
-		})(circle,content,infowindow));
-
-		cmarkers.push(circle);
-		
-		google.maps.event.addListener(circle, 'click', function() {
-    			// showInfo(this);
-				showThisClusterCloud(this.clusterid, 1);
-				showThisClusterGraph(this.clusterid, 1);
-  		});
+						circle.addEventListener("click", function() {
+							// showInfo(this);
+							console.log(this.options.clusterid);
+							showThisClusterCloud(this.options.clusterid, 1);
+							showThisClusterGraph(this.options.clusterid, 1);
+							setTheseMicroClusters(this.options.testid);
+				  		});
   			}
   		}
   }
@@ -2480,7 +2086,7 @@ function defineDimensions(){
 $(document).ready(function(){
 	$("input[name='microclustering']").change(displayMicro);
 	$("input[name='macroclustering']").change(displayMacro);
-	$("input[name='tweets']").change(toggleHeatmap);
+	$("input[name='tweets']").change(displayTweets);
 	$("input[name='tempopoints']").change(sliderChanged);
 	$("input[name='spatialpoints']").change(SpatialsliderChanged);
 	$("input[name='pointsTimeline']").change(TimelineSliderChanged);

@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <!-- <meta http-equiv="refresh" content="600">   -->
 
     <title>TweeProfiles3</title>
 
@@ -18,6 +19,7 @@
     <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css' rel='stylesheet' />
     <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css' rel='stylesheet' />
     <link href="http://visjs.org/dist/vis.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
     <!-- <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />-->
     <!-- Bootstrap theme -->
     <!-- <link href="css/bootstrap-theme.min.css" rel="stylesheet"> -->
@@ -35,16 +37,16 @@
     <!--<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBnMv6QNW-8AeVILsEuahE6k9UqngFmJkQ&sensor=false"></script>-->
     <script type="text/javascript" src="<?php echo base_url();?>js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="<?php echo base_url();?>js/tweeprofiles.js"></script>
-    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
-    <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="<?php echo base_url();?>js/d3.layout.cloud.js"></script>
-
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <!-- <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>-->
     <!-- <script src="Scripts/modernizr.custom.61082.js"></script>
     <script src="Scripts/pixSocket.js"></script>
-    <script src="Scripts/script.js"></script> -->
+    <script src="Scripts/script.js"></script> 
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
+    <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>-->
 
     <script src="http://simile.mit.edu/timeline/api/timeline-api.js" type="text/javascript"></script>
 
@@ -80,9 +82,9 @@
                     <li>
                         <a class="page-scroll" href="#services" style="color:#4099FF; font-family: fantasy;">Timeline</a>
                     </li>
-                    <li>
+<!--                     <li>
                         <a class="page-scroll" href="#contact" style="color:#4099FF; font-family: fantasy;">Contact</a>
-                    </li>
+                    </li> -->
                 </ul>
                  <div id="twitterPic">   
                     <img src="<?php echo base_url();?>image/twitter_icon.jpg" alt="Twitter" width="45" height="45">     
@@ -106,7 +108,7 @@
                     <hr noshade="" size="1" width="1150" style="position: absolute; top:-25px; left:5%">
 
                     <div id="controls" style="display:none;">
-                        <div id="dimension" style="left:5%;">
+                        <div id="dimension" style="left:1%;">
                             Spatial
                             <input id="slider" type="range" name="spatialpoints" min="0" max="3" list="Spts" value="0">
                             <datalist id="Spts">
@@ -116,7 +118,7 @@
                                     <option>4</option>
                                 </datalist>
                         </div>
-                        <div id="dimension" style="left:30%;">
+                        <div id="dimension" style="left:20%;">
                             Temporal (Weekdays)
                             <input id="slider" type="range" name="tempopoints" min="0" max="8" list="Tpts" value="0">
                             <datalist id="Tpts">
@@ -130,7 +132,7 @@
                                     <option>7</option>
                                 </datalist>
                         </div>
-                        <div id="dimension" style="left:55%;">
+                        <div id="dimension" style="left:40%;">
                             <form>
                                 <label for="name">Content:</label>
                                 <input type="text" name="searchWord" id="searchWord">
@@ -144,7 +146,7 @@
                                     <option>4</option>
                                 </datalist> -->
                         </div>
-<!--                          <div id="dimension" style="left:76%;">
+                         <div id="dimension" style="left:75%;">
                             Timeline
                             <input id="slider" type="range" name="pointsTimeline" min="0" max="8" list="timpts" value="0">
                             <datalist id="timpts">
@@ -157,7 +159,7 @@
                                     <option>6</option>
                                     <option>7</option>
                             </datalist>
-                        </div> -->
+                        </div>
                     </div>
 
             <form id="dimensionsControl" style="display:none; position: absolute; top:-55px;">
@@ -165,13 +167,13 @@
             <label for="radio_allDimensions" style="color:#4099FF; font-family: fantasy; font-size:12px;">All Dimensions </label>
 
             <input type="radio" name="UseDimension" id="radio_timeDimension" value="1"/>
-            <label for="radio_timeDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Time Dimension </label>
+            <label for="radio_timeDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Time </label>
 
             <input type="radio" name="UseDimension" id="radio_spaceDimension" value="1" />
-            <label for="radio_spaceDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Space Dimension </label>
+            <label for="radio_spaceDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Space </label>
 
             <input type="radio" name="UseDimension" id="radio_contentDimension" value="1" />
-            <label for="radio_contentDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Content Dimension </label><br>
+            <label for="radio_contentDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Content </label><br>
 
             <input type="radio" name="UseDimension" id="radio_timespaceDimension" value="1"/>
             <label for="radio_timeDimension" style="color:#4099FF; font-family: fantasy; font-size:12px;">Time and Space </label>
@@ -262,7 +264,7 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact-section">
+<!--     <section id="contact" class="contact-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -270,7 +272,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- jQuery Version 1.11.0 -->
     <script src="js/jquery-1.11.0.js"></script>

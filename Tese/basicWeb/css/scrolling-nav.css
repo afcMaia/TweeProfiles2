@@ -121,6 +121,7 @@ of those sections to manage the look and feel of the site. */
     width:19%;
     height:70%;
     float: left;
+    overflow-y: scroll
 }
 #streamMaquina{
     background-color: #eee;
@@ -130,6 +131,7 @@ of those sections to manage the look and feel of the site. */
     width:19%;
     height:70%;
     float: left;
+    overflow-y: scroll
 }
 
 #contenttweets{
