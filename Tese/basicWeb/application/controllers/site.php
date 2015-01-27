@@ -21,6 +21,16 @@ class Site extends CI_Controller {
 	header('Access-Control-Allow-Origin: http://localhost:8080');
 	}
 
+	function getAllTweets(){
+	$this->load->model("allTweets");
+	$data = $this->allTweets->getAllTweets();
+
+    $this->output->set_content_type('application/json')
+                 ->set_output(json_encode($data));
+
+	header('Access-Control-Allow-Origin: http://localhost:8080');
+	}
+
 	function getMicroClusters(){
 	$this->load->model("microclusters");
 	$data = $this->microclusters->getAllMicroClusters();

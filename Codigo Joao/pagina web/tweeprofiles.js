@@ -85,7 +85,7 @@ function showClustersMap(){
 		
 		var circle = new google.maps.Circle({
 			center:pos,
-			radius:items[i].radius*20200*100,
+			radius:items[i].radius*20200*10,
 			strokeColor:"#0000FF",
 			strokeOpacity:0.8,
 			strokeWeight:2,
